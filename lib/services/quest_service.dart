@@ -63,9 +63,7 @@ class QuestService {
       await _firestore.collection('quests').doc(questId).update({
         'progress': progress,
         'status':
-            progress >=
-                    quest
-                        .maxProgress // Fix: use maxProgress, not 1
+            progress >= quest.maxProgress
                 ? QuestStatus.completed.index
                 : QuestStatus.inProgress.index,
       });
@@ -82,7 +80,6 @@ class QuestService {
 
       // Award XP if quest is completed
       if (progress >= quest.maxProgress) {
-        // Fix: use maxProgress
         await _awardXP(quest.xpReward);
         await _updateBudget(quest.cost);
       }
