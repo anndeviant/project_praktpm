@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import 'home_view.dart';
+import 'main_navigation.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -42,7 +42,7 @@ class _RegisterViewState extends State<RegisterView> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const HomeView()),
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
           (route) => false,
         );
       }
