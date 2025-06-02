@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'login_view.dart';
-import 'home_view.dart';
+import 'main_navigation.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -28,7 +28,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
         if (snapshot.hasData) {
           // User is logged in
-          return const HomeView();
+          return const MainNavigation();
         } else {
           // User is not logged in
           return const LoginView();
