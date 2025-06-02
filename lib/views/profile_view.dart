@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../services/prayer_service.dart';
 import '../models/user_model.dart';
+import '../models/prayer_model.dart';
 import 'login_view.dart';
 import 'package:logger/logger.dart';
 
@@ -13,9 +15,12 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final AuthService _authService = AuthService();
+  final PrayerService _prayerService = PrayerService();
   UserProfile? _userProfile;
+  RandomAsmaul? _randomAsmaul;
   bool _isLoading = true;
   bool _isEditing = false;
+  bool _isAsmaulLoading = false;
   final Logger _logger = Logger();
 
   final _nameController = TextEditingController();
@@ -24,7 +29,11 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.wait([_loadProfile(), _loadRandomAsmaul()]);
   }
 
   Future<void> _loadProfile() async {
@@ -39,6 +48,17 @@ class _ProfileViewState extends State<ProfileView> {
       _logger.e('Error loading profile: $e');
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loadRandomAsmaul() async {
+    setState(() => _isAsmaulLoading = true);
+    try {
+      _randomAsmaul = await _prayerService.getRandomAsmaul();
+    } catch (e) {
+      _logger.e('Error loading random asmaul: $e');
+    } finally {
+      setState(() => _isAsmaulLoading = false);
     }
   }
 
@@ -78,6 +98,8 @@ class _ProfileViewState extends State<ProfileView> {
           _buildLevelCard(),
           const SizedBox(height: 20),
           _buildBudgetCard(),
+          const SizedBox(height: 20),
+          _buildAsmaulHusnaCard(),
           const SizedBox(height: 20),
           _buildActionButtons(),
         ],
@@ -301,6 +323,107 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             const SizedBox(height: 8),
             LinearProgressIndicator(value: _userProfile!.budgetUsagePercentage),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAsmaulHusnaCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.amber.shade700),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Asmaul Husna',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: _isAsmaulLoading ? null : _loadRandomAsmaul,
+                  icon:
+                      _isAsmaulLoading
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.refresh),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (_randomAsmaul != null) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.amber.shade50, Colors.amber.shade100],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      _randomAsmaul!.arab,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _randomAsmaul!.latin,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _randomAsmaul!.indo,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ] else if (_isAsmaulLoading) ...[
+              const SizedBox(
+                height: 80,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ] else ...[
+              SizedBox(
+                height: 80,
+                child: Center(
+                  child: Text(
+                    'Gagal memuat Asmaul Husna',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
