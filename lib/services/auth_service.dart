@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
+import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -89,6 +90,8 @@ class AuthService {
           return 'Password salah';
         case 'invalid-credential':
           return 'Email atau password salah';
+        case 'network-request-failed':
+          return 'Tidak ada koneksi internet';
         case 'too-many-requests':
           return 'Terlalu banyak percobaan, coba lagi nanti';
         default:
@@ -119,6 +122,55 @@ class AuthService {
     } catch (e) {
       _logger.e('Error getting user data: $e');
       return null;
+    }
+  }
+
+  Future<UserProfile?> getUserProfile() async {
+    try {
+      if (currentUser != null) {
+        DocumentSnapshot doc =
+            await _firestore.collection('users').doc(currentUser!.uid).get();
+        if (doc.exists) {
+          return UserProfile.fromFirestore(doc);
+        }
+      }
+      return null;
+    } catch (e) {
+      _logger.e('Error getting user profile: $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateUserProfile(UserProfile profile) async {
+    try {
+      if (currentUser != null) {
+        await _firestore
+            .collection('users')
+            .doc(currentUser!.uid)
+            .update(profile.toMap());
+        _logger.i('User profile updated successfully');
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _logger.e('Error updating user profile: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateUserBudget(double totalBudget) async {
+    try {
+      if (currentUser != null) {
+        await _firestore.collection('users').doc(currentUser!.uid).update({
+          'totalBudget': totalBudget,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _logger.e('Error updating user budget: $e');
+      return false;
     }
   }
 }
