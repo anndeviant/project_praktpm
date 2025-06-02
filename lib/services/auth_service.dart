@@ -9,6 +9,9 @@ class AuthService {
 
   User? get currentUser => _auth.currentUser;
 
+  // Add auth state stream
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
   Future<Map<String, dynamic>> signInWithEmailAndPassword(
     String email,
     String password,

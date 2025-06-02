@@ -40,9 +40,10 @@ class _RegisterViewState extends State<RegisterView> {
 
     if (result['success']) {
       if (mounted) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomeView()),
+          MaterialPageRoute(builder: (context) => const HomeView()),
+          (route) => false,
         );
       }
     } else {

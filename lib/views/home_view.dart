@@ -29,9 +29,10 @@ class _HomeViewState extends State<HomeView> {
   Future<void> _logout() async {
     await _authService.signOut();
     if (mounted) {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginView()),
+        MaterialPageRoute(builder: (context) => const LoginView()),
+        (route) => false,
       );
     }
   }
