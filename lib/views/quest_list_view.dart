@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/quest_service.dart';
 import '../services/favorite_service.dart';
+import '../services/prayer_service.dart';
 import '../models/quest_model.dart';
+import '../models/prayer_model.dart';
 import 'create_quest_view.dart';
 import 'package:logger/logger.dart';
 
@@ -17,17 +19,23 @@ class _QuestListViewState extends State<QuestListView> {
   final AuthService _authService = AuthService();
   final QuestService _questService = QuestService();
   final FavoriteService _favoriteService = FavoriteService();
+  final PrayerService _prayerService = PrayerService();
   final Logger _logger = Logger();
 
   QuestType? _selectedType;
   String _kodeKkn = '';
   List<Quest> _quests = [];
+  HijriCalendar? _hijriCalendar;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadQuests();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.wait([_loadQuests(), _loadHijriCalendar()]);
   }
 
   Future<void> _loadQuests() async {
@@ -51,11 +59,20 @@ class _QuestListViewState extends State<QuestListView> {
     }
   }
 
+  Future<void> _loadHijriCalendar() async {
+    try {
+      _hijriCalendar = await _prayerService.getHijriCalendar();
+    } catch (e) {
+      _logger.e('Error loading hijri calendar: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
+          _buildHijriCalendarCard(),
           _buildFilterChips(),
           Expanded(
             child:
@@ -72,6 +89,83 @@ class _QuestListViewState extends State<QuestListView> {
               MaterialPageRoute(builder: (context) => const CreateQuestView()),
             ).then((_) => _loadQuests()),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildHijriCalendarCard() {
+    return Card(
+      margin: const EdgeInsets.all(16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.calendar_today, color: Colors.green.shade700),
+                const SizedBox(width: 8),
+                const Text(
+                  'Kalender Hijriah',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (_hijriCalendar != null) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _hijriCalendar!.fullDate,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        _hijriCalendar!.formattedHijriDate,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Masehi',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        _hijriCalendar!.formattedGregorianDate,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ] else ...[
+              Center(
+                child: Text(
+                  'Gagal memuat kalender hijriah',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
