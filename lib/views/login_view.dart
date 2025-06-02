@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'register_view.dart';
 import 'forgot_password_view.dart';
-import 'home_view.dart';
+import 'main_navigation.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -38,10 +38,9 @@ class _LoginViewState extends State<LoginView> {
 
     if (result['success']) {
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeView()),
-          (route) => false,
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
         );
       }
     } else {
