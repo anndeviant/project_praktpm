@@ -5,6 +5,8 @@ import '../services/favorite_service.dart';
 import '../services/prayer_service.dart';
 import '../models/quest_model.dart';
 import '../models/prayer_model.dart';
+import '../widgets/quest_theme.dart';
+import '../widgets/enhanced_quest_card.dart';
 import 'create_quest_view.dart';
 import 'package:logger/logger.dart';
 
@@ -51,172 +53,249 @@ class _QuestListViewState extends State<QuestListView> {
         } else {
           _quests = await _questService.getQuestsByKodeKkn(_kodeKkn);
         }
-      }
-    } catch (e) {
+      }    } catch (e) {
       _logger.e('Error loading quests: $e');
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
-
   Future<void> _loadHijriCalendar() async {
     try {
       _hijriCalendar = await _prayerService.getHijriCalendar();
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       _logger.e('Error loading hijri calendar: $e');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: QuestTheme.backgroundLight,
       body: Column(
         children: [
           _buildHijriCalendarCard(),
           _buildFilterChips(),
           Expanded(
-            child:
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _buildQuestList(),
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(QuestTheme.primaryBlue),
+                    ),
+                  )
+                : _buildQuestList(),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreateQuestView()),
-            ).then((_) => _loadQuests()),
-        child: const Icon(Icons.add),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: QuestTheme.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: QuestTheme.buttonShadow,
+        ),
+        child: FloatingActionButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateQuestView()),
+          ).then((_) => _loadQuests()),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: const Icon(Icons.add, color: Colors.white, size: 28),
+        ),
       ),
     );
   }
-
   Widget _buildHijriCalendarCard() {
-    return Card(
+    return Container(
       margin: const EdgeInsets.all(16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.calendar_today, color: Colors.green.shade700),
-                const SizedBox(width: 8),
-                const Text(
-                  'Kalender Hijriah',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            QuestTheme.successColor.withOpacity(0.1),
+            QuestTheme.successColor.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: QuestTheme.largeBorderRadius,
+        border: Border.all(
+          color: QuestTheme.successColor.withOpacity(0.2),
+        ),
+        boxShadow: QuestTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: QuestTheme.successColor.withOpacity(0.1),
+                  borderRadius: QuestTheme.smallBorderRadius,
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            if (_hijriCalendar != null) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Icon(
+                  Icons.calendar_today,
+                  color: QuestTheme.successColor,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Kalender Hijriah',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: QuestTheme.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_hijriCalendar != null) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: QuestTheme.borderRadius,
+                border: Border.all(
+                  color: QuestTheme.successColor.withOpacity(0.1),
+                ),
+              ),
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _hijriCalendar!.fullDate,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        _hijriCalendar!.formattedHijriDate,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    _hijriCalendar!.fullDate,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: QuestTheme.textPrimary,
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        'Masehi',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
+                      Column(
+                        children: [
+                          Text(
+                            'Hijriah',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: QuestTheme.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            _hijriCalendar!.formattedHijriDate,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: QuestTheme.successColor,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        _hijriCalendar!.formattedGregorianDate,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: QuestTheme.surfaceColor,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'Masehi',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: QuestTheme.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            _hijriCalendar!.formattedGregorianDate,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: QuestTheme.textPrimary,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ],
               ),
-            ] else ...[
-              Center(
+            ),
+          ] else ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: QuestTheme.surfaceColor,
+                borderRadius: QuestTheme.borderRadius,
+              ),
+              child: Center(
                 child: Text(
                   'Gagal memuat kalender hijriah',
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(color: QuestTheme.textSecondary),
                 ),
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
-
   Widget _buildFilterChips() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            FilterChip(
-              label: const Text('All'),
-              selected: _selectedType == null,
-              onSelected: (selected) {
+            _buildFilterChip(
+              'All',
+              _selectedType == null,
+              () {
                 setState(() => _selectedType = null);
                 _loadQuests();
               },
+              QuestTheme.primaryBlue,
             ),
             const SizedBox(width: 8),
-            FilterChip(
-              label: const Text('Daily'),
-              selected: _selectedType == QuestType.daily,
-              onSelected: (selected) {
-                setState(
-                  () => _selectedType = selected ? QuestType.daily : null,
-                );
+            _buildFilterChip(
+              'Daily',
+              _selectedType == QuestType.daily,
+              () {
+                setState(() => _selectedType = _selectedType == QuestType.daily ? null : QuestType.daily);
                 _loadQuests();
               },
+              QuestTheme.dailyColor,
             ),
             const SizedBox(width: 8),
-            FilterChip(
-              label: const Text('Weekly'),
-              selected: _selectedType == QuestType.weekly,
-              onSelected: (selected) {
-                setState(
-                  () => _selectedType = selected ? QuestType.weekly : null,
-                );
+            _buildFilterChip(
+              'Weekly',
+              _selectedType == QuestType.weekly,
+              () {
+                setState(() => _selectedType = _selectedType == QuestType.weekly ? null : QuestType.weekly);
                 _loadQuests();
               },
+              QuestTheme.weeklyColor,
             ),
             const SizedBox(width: 8),
-            FilterChip(
-              label: const Text('Monthly'),
-              selected: _selectedType == QuestType.monthly,
-              onSelected: (selected) {
-                setState(
-                  () => _selectedType = selected ? QuestType.monthly : null,
-                );
+            _buildFilterChip(
+              'Monthly',
+              _selectedType == QuestType.monthly,
+              () {
+                setState(() => _selectedType = _selectedType == QuestType.monthly ? null : QuestType.monthly);
                 _loadQuests();
               },
+              QuestTheme.monthlyColor,
             ),
           ],
         ),
@@ -224,9 +303,114 @@ class _QuestListViewState extends State<QuestListView> {
     );
   }
 
+  Widget _buildFilterChip(String label, bool isSelected, VoidCallback onTap, Color color) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [color, color.withOpacity(0.8)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected ? null : Colors.white,
+          borderRadius: QuestTheme.borderRadius,
+          border: Border.all(
+            color: isSelected ? Colors.transparent : color.withOpacity(0.3),
+          ),
+          boxShadow: isSelected ? [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ] : [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isSelected)
+              Icon(
+                QuestTypeHelper.getQuestTypeIcon(label.toLowerCase()),
+                size: 16,
+                color: Colors.white,
+              ),
+            if (isSelected) const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.white : color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
   Widget _buildQuestList() {
     if (_quests.isEmpty) {
-      return const Center(child: Text('No quests found'));
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: QuestTheme.surfaceColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.assignment_outlined,
+                  size: 64,
+                  color: QuestTheme.textMuted,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'No quests found',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: QuestTheme.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _selectedType != null
+                    ? 'No ${_selectedType!.name} quests available'
+                    : 'Create your first quest to get started!',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: QuestTheme.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              QuestButton(
+                text: 'Create Quest',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateQuestView()),
+                ).then((_) => _loadQuests()),
+                icon: Icons.add,
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return ListView.builder(
@@ -234,182 +418,40 @@ class _QuestListViewState extends State<QuestListView> {
       itemCount: _quests.length,
       itemBuilder: (context, index) {
         final quest = _quests[index];
-        return _buildQuestCard(quest);
+        return FutureBuilder<bool>(
+          future: _favoriteService.isFavorite(
+            quest.id,
+            _authService.currentUser?.uid ?? '',
+          ),
+          builder: (context, snapshot) {
+            final isFavorite = snapshot.data ?? false;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: EnhancedQuestCard(
+                quest: quest,
+                isFavorite: isFavorite,
+                onFavorite: () => _toggleFavorite(quest, isFavorite),
+                onProgress: quest.isCompleted ? null : () => _updateProgress(quest),
+                showProgress: true,
+              ),
+            );
+          },
+        );
       },
     );
   }
 
-  Widget _buildQuestCard(Quest quest) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    quest.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                FutureBuilder<bool>(
-                  future: _favoriteService.isFavorite(
-                    quest.id,
-                    _authService.currentUser?.uid ?? '',
-                  ),
-                  builder: (context, snapshot) {
-                    final isFavorite = snapshot.data ?? false;
-                    return IconButton(
-                      onPressed: () => _toggleFavorite(quest, isFavorite),
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : null,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),            const SizedBox(height: 8),
-            Text(quest.description),
-            const SizedBox(height: 8),
-            if (quest.deadline != null)
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: quest.isExpired ? Colors.red.shade100 : Colors.orange.shade100,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.schedule,
-                      size: 16,
-                      color: quest.isExpired ? Colors.red.shade700 : Colors.orange.shade700,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Deadline: ${_formatDeadline(quest.deadline!)}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: quest.isExpired ? Colors.red.shade700 : Colors.orange.shade700,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            if (quest.deadline != null) const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Chip(
-                    label: Text(quest.type.name.toUpperCase()),
-                    backgroundColor: _getTypeColor(quest.type),
-                  ),
-                  const SizedBox(width: 8),
-                  if (quest.cost > 0)
-                    Chip(
-                      label: Text('Rp${quest.cost.toStringAsFixed(0)}'),
-                      backgroundColor: Colors.orange.shade100,
-                    ),
-                  const SizedBox(width: 8),
-                  Chip(
-                    label: Text('${quest.xpReward} XP'),
-                    backgroundColor: Colors.blue.shade100,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(value: quest.progressPercentage),
-            const SizedBox(height: 4),
-            Text('${quest.progress}/${quest.maxProgress} completed'),
-            const SizedBox(height: 8),
-            if (quest.progress <
-                quest.maxProgress) // Fix: show button until maxProgress reached
-              ElevatedButton(
-                onPressed: () => _updateProgress(quest),
-                child: const Text('Update Progress'),
-              ),
-            if (quest.isCompleted) // Add completion indicator
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green.shade700),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Quest Completed!',
-                      style: TextStyle(
-                        color: Colors.green.shade700,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );  }
-
-  String _formatDeadline(DateTime deadline) {
-    final now = DateTime.now();
-    final difference = deadline.difference(now);
-    
-    String dateTimeStr = '${deadline.day}/${deadline.month}/${deadline.year} at ${deadline.hour.toString().padLeft(2, '0')}:${deadline.minute.toString().padLeft(2, '0')}';
-    
-    if (difference.isNegative) {
-      return '$dateTimeStr (Expired)';
-    } else if (difference.inDays == 0) {
-      if (difference.inHours == 0) {
-        return '$dateTimeStr (${difference.inMinutes} min left)';
-      } else {
-        return '$dateTimeStr (${difference.inHours}h ${difference.inMinutes % 60}m left)';
-      }
-    } else if (difference.inDays == 1) {
-      return '$dateTimeStr (Tomorrow)';
-    } else {
-      return '$dateTimeStr (${difference.inDays} days left)';
-    }
-  }
-
-  Color _getTypeColor(QuestType type) {
-    switch (type) {
-      case QuestType.daily:
-        return Colors.orange.shade100;
-      case QuestType.weekly:
-        return Colors.blue.shade100;
-      case QuestType.monthly:
-        return Colors.green.shade100;
-    }
-  }
 
   Future<void> _toggleFavorite(Quest quest, bool isFavorite) async {
     final userId = _authService.currentUser?.uid;
-    if (userId == null) return;
-
-    if (isFavorite) {
+    if (userId == null) return;    if (isFavorite) {
       await _favoriteService.removeFavorite(quest.id, userId);
     } else {
       await _favoriteService.addFavorite(quest.id, userId, quest.title);
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _updateProgress(Quest quest) async {
@@ -422,6 +464,12 @@ class _QuestListViewState extends State<QuestListView> {
       await _questService.updateQuestProgress(quest.id, result);
       _loadQuests();
     }
+  }
+
+  @override
+  void dispose() {
+    // Clean up any resources if needed
+    super.dispose();
   }
 }
 

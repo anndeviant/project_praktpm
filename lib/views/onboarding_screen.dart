@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animate_do/animate_do.dart';
+import '../widgets/quest_theme.dart';
 import 'auth_wrapper.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -12,26 +13,24 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  final List<OnboardingPage> _pages = [
+  int _currentPage = 0;  final List<OnboardingPage> _pages = [
     OnboardingPage(
       icon: Icons.assignment_outlined,
       title: 'Kelola Quest KKN',
       description: 'Buat dan kelola berbagai quest untuk kegiatan KKN Anda dengan mudah dan terorganisir.',
-      color: const Color(0xFF667eea),
+      color: QuestTheme.primaryBlue,
     ),
     OnboardingPage(
       icon: Icons.favorite_outline,
       title: 'Simpan Favorit',
       description: 'Tandai quest favorit Anda untuk akses cepat dan mudah kapan saja.',
-      color: const Color(0xFF764ba2),
+      color: QuestTheme.primaryPurple,
     ),
     OnboardingPage(
       icon: Icons.analytics_outlined,
       title: 'Pantau Progress',
       description: 'Lacak kemajuan kegiatan KKN dan catat pencapaian Anda secara real-time.',
-      color: const Color(0xFFf093fb),
+      color: QuestTheme.primaryBlue,
     ),
   ];
 
@@ -108,9 +107,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           duration: const Duration(milliseconds: 800),
                           child: Container(
                             width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              color: _pages[index].color.withOpacity(0.1),
+                            height: 150,                            decoration: BoxDecoration(
+                              color: _pages[index].color.withAlpha(25),
                               borderRadius: BorderRadius.circular(75),
                             ),
                             child: Icon(
@@ -168,10 +166,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         width: _currentPage == index ? 24 : 8,
                         height: 8,
-                        decoration: BoxDecoration(
-                          color: _currentPage == index
+                        decoration: BoxDecoration(                          color: _currentPage == index
                               ? _pages[_currentPage].color
-                              : Colors.grey.withOpacity(0.3),
+                              : Colors.grey.withAlpha(77),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),

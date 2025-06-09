@@ -32,6 +32,48 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Manajemen KKN', home: const SplashScreen());
+    return MaterialApp(
+      title: 'KKN Quest - Petualangan Mahasiswa', 
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF667eea),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF667eea),
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        textTheme: const TextTheme(
+          headlineLarge: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          headlineMedium: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.25),
+          titleLarge: TextStyle(fontWeight: FontWeight.w600),
+          bodyLarge: TextStyle(letterSpacing: 0.15),
+          bodyMedium: TextStyle(letterSpacing: 0.25),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        cardTheme: CardTheme(
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          clipBehavior: Clip.antiAlias,
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+      home: const SplashScreen(),
+    );
   }
 }

@@ -3,6 +3,7 @@ import '../services/auth_service.dart';
 import '../services/quest_service.dart';
 import '../models/user_model.dart';
 import '../models/quest_model.dart';
+import '../widgets/quest_theme.dart';
 import 'package:logger/logger.dart';
 
 class MoneyTrackerView extends StatefulWidget {
@@ -44,27 +45,91 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
       setState(() => _isLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
+          ),
+        ),
+        child: const Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (_userProfile == null) {
-      return const Center(child: Text('Error loading user data'));
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
+          ),
+        ),
+        child: const Center(child: Text('Error loading user data')),
+      );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
+        ),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildBudgetHeader(),
+            const SizedBox(height: 20),
+            _buildBudgetOverview(),
+            const SizedBox(height: 20),
+            _buildBudgetActions(),
+            const SizedBox(height: 20),
+            _buildExpenseHistory(),
+          ],
+        ),
+      ),
+    );  }
+
+  Widget _buildBudgetHeader() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: QuestTheme.primaryGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: QuestTheme.cardShadow,
+      ),
+      child: const Column(
         children: [
-          _buildBudgetOverview(),
-          const SizedBox(height: 20),
-          _buildBudgetActions(),
-          const SizedBox(height: 20),
-          _buildExpenseHistory(),
+          Icon(
+            Icons.account_balance_wallet,
+            size: 48,
+            color: Colors.white,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Budget Tracker',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            'Monitor your KKN expenses and budget',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );

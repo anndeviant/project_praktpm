@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animate_do/animate_do.dart';
+import '../widgets/quest_theme.dart';
 import 'onboarding_screen.dart';
 import 'auth_wrapper.dart';
 import '../utils/notification_helper.dart';
@@ -47,18 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Scaffold(      body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF667eea),
-              Color(0xFF764ba2),
-            ],
-          ),
-        ),        child: Center(
+          gradient: QuestTheme.primaryGradient,
+        ),child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -72,16 +65,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                      boxShadow: [                        BoxShadow(
+                          color: Colors.black26,
                           blurRadius: 10,
                           offset: const Offset(0, 5),
                         ),
                       ],
-                    ),
-                    child: const Icon(
-                      Icons.work_outline,
+                    ),                    child: const Icon(
+                      Icons.assignment_outlined,
                       size: 60,
                       color: Color(0xFF667eea),
                     ),
@@ -91,22 +82,21 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 30),
               FadeInUp(
                 duration: const Duration(milliseconds: 1200),
-                delay: const Duration(milliseconds: 500),
-                child: const Text(
-                  'Manajemen KKN',
+                delay: const Duration(milliseconds: 500),                child: const Text(
+                  'KKN Quest',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    letterSpacing: 1.5,
                   ),
                 ),
               ),
               const SizedBox(height: 10),
               FadeInUp(
                 duration: const Duration(milliseconds: 1000),
-                delay: const Duration(milliseconds: 800),
-                child: const Text(
-                  'Kelola kegiatan KKN Anda',
+                delay: const Duration(milliseconds: 800),                child: const Text(
+                  'Petualangan KKN Dimulai',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white70,

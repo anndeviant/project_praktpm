@@ -3,6 +3,7 @@ import '../services/auth_service.dart';
 import '../services/prayer_service.dart';
 import '../models/user_model.dart';
 import '../models/prayer_model.dart';
+import '../widgets/quest_theme.dart';
 import 'login_view.dart';
 import 'package:logger/logger.dart';
 
@@ -61,12 +62,19 @@ class _ProfileViewState extends State<ProfileView> {
       setState(() => _isAsmaulLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: QuestTheme.backgroundLight,
       appBar: AppBar(
         title: const Text('Profile'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: QuestTheme.primaryGradient,
+          ),
+        ),
         actions: [
           if (!_isEditing && _userProfile != null)
             IconButton(
@@ -77,12 +85,20 @@ class _ProfileViewState extends State<ProfileView> {
             IconButton(onPressed: _saveProfile, icon: const Icon(Icons.save)),
         ],
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _userProfile == null
-              ? const Center(child: Text('Error loading profile'))
-              : _buildProfileContent(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _userProfile == null
+                ? const Center(child: Text('Error loading profile'))
+                : _buildProfileContent(),
+      ),
     );
   }
 

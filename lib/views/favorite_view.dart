@@ -4,6 +4,7 @@ import '../services/favorite_service.dart';
 import '../services/prayer_service.dart';
 import '../models/favorite_model.dart';
 import '../models/prayer_model.dart';
+import '../widgets/quest_theme.dart';
 import 'package:logger/logger.dart';
 
 class FavoriteView extends StatefulWidget {
@@ -56,14 +57,21 @@ class _FavoriteViewState extends State<FavoriteView> {
       setState(() => _isDoaLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
+      backgroundColor: QuestTheme.backgroundLight,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
                 child: Column(
                   children: [
                     _buildRandomDoaCard(),
@@ -77,6 +85,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                   ],
                 ),
               ),
+      ),
     );
   }
 
