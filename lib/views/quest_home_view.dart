@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../services/auth_service.dart';
 import '../services/quest_service.dart';
 import '../services/prayer_service.dart';
+import '../services/notification_service.dart';
 import '../models/quest_model.dart';
 import '../models/user_model.dart';
 import '../models/prayer_model.dart';
+import '../utils/notification_helper.dart';
 import 'package:logger/logger.dart';
 
 class QuestHomeView extends StatefulWidget {
@@ -27,13 +30,21 @@ class _QuestHomeViewState extends State<QuestHomeView> {
   bool _isLoading = true;
   final Logger _logger = Logger();
   bool _disposed = false; // Flag untuk mengecek apakah widget sudah di-dispose
-
+  Timer? _deadlineCheckTimer; // Timer untuk mengecek deadline secara berkala
   @override
   void initState() {
     super.initState();
     _loadData();
+    _startDeadlineCheckTimer();
+  }  void _startDeadlineCheckTimer() {
+    // Check for upcoming deadlines every 15 minutes (reduced from 5 minutes)
+    // This ensures notifications work even when scheduled notifications fail
+    _deadlineCheckTimer = Timer.periodic(const Duration(minutes: 15), (timer) {
+      if (!_disposed && mounted) {
+        _questService.checkUpcomingDeadlinesWithSmartNotification();
+      }
+    });
   }
-
   Future<void> _loadData() async {
     try {
       final userProfile = await _authService.getUserProfile();
@@ -52,11 +63,16 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         _monthlyQuests = await _questService.getQuestsByType(
           kodeKkn,
           QuestType.monthly,
-        );
+        );        
+        // Schedule notifications for all active quests with deadlines
+        await _questService.scheduleAllQuestNotifications(kodeKkn);
+        
+        // Check for immediate deadline notifications (smart check to prevent spam)
+        await _questService.checkUpcomingDeadlinesWithSmartNotification();
       }
 
       // Load prayer schedule
-      await _loadPrayerSchedule();    } catch (e) {
+      await _loadPrayerSchedule();} catch (e) {
       _logger.e('Error loading data: $e');
     } finally {
       // Cek apakah widget masih mounted sebelum memanggil setState
@@ -73,9 +89,10 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       _logger.e('Error loading prayer schedule: $e');
     }
   }
-
   @override
   void dispose() {
+    // Cancel timer
+    _deadlineCheckTimer?.cancel();
     // Set flag bahwa widget sudah di-dispose
     _disposed = true;
     super.dispose();
@@ -97,8 +114,9 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildPrayerScheduleCard(),
+          const SizedBox(height: 20),          _buildWelcomeCard(),
           const SizedBox(height: 20),
-          _buildWelcomeCard(),
+          _buildNotificationTestCard(),
           const SizedBox(height: 20),
           _buildProgressOverview(),
           const SizedBox(height: 20),
@@ -355,6 +373,151 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         ),
       ),
     );
+  }
+
+  Widget _buildNotificationTestCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.notifications, color: Colors.blue),
+                SizedBox(width: 8),
+                Text(
+                  'Reminder Notification',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Sistem akan mengirim reminder 15 menit sebelum deadline quest',
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _testNotification,
+                    icon: const Icon(Icons.notification_add),
+                    label: const Text('Test Notification'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _checkNotificationPermission,
+                    icon: const Icon(Icons.settings),
+                    label: const Text('Check Permission'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _testNotification() async {
+    try {
+      final NotificationService notificationService = NotificationService();
+      await notificationService.showTestNotification();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Test notification berhasil dikirim! 📱'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      _logger.e('Error testing notification: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal mengirim test notification'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _checkNotificationPermission() async {
+    try {
+      final bool hasPermission = await NotificationHelper.areNotificationsEnabled();
+      final int pendingCount = await NotificationService().getPendingNotificationsCount();
+      
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Status Notifikasi'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      hasPermission ? Icons.check_circle : Icons.cancel,
+                      color: hasPermission ? Colors.green : Colors.red,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      hasPermission ? 'Permission Diizinkan' : 'Permission Ditolak',
+                      style: TextStyle(
+                        color: hasPermission ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text('Pending notifications: $pendingCount'),
+                if (!hasPermission) ...[
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Aktifkan notifikasi di pengaturan untuk mendapat reminder quest.',
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+              if (!hasPermission)
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    NotificationHelper.requestPermission(context);
+                  },
+                  child: const Text('Request Permission'),
+                ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      _logger.e('Error checking notification permission: $e');
+    }
   }
 }
 

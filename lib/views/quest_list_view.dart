@@ -276,10 +276,37 @@ class _QuestListViewState extends State<QuestListView> {
                   },
                 ),
               ],
-            ),
-            const SizedBox(height: 8),
+            ),            const SizedBox(height: 8),
             Text(quest.description),
             const SizedBox(height: 8),
+            if (quest.deadline != null)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: quest.isExpired ? Colors.red.shade100 : Colors.orange.shade100,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.schedule,
+                      size: 16,
+                      color: quest.isExpired ? Colors.red.shade700 : Colors.orange.shade700,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Deadline: ${_formatDeadline(quest.deadline!)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: quest.isExpired ? Colors.red.shade700 : Colors.orange.shade700,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (quest.deadline != null) const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -339,7 +366,27 @@ class _QuestListViewState extends State<QuestListView> {
           ],
         ),
       ),
-    );
+    );  }
+
+  String _formatDeadline(DateTime deadline) {
+    final now = DateTime.now();
+    final difference = deadline.difference(now);
+    
+    String dateTimeStr = '${deadline.day}/${deadline.month}/${deadline.year} at ${deadline.hour.toString().padLeft(2, '0')}:${deadline.minute.toString().padLeft(2, '0')}';
+    
+    if (difference.isNegative) {
+      return '$dateTimeStr (Expired)';
+    } else if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        return '$dateTimeStr (${difference.inMinutes} min left)';
+      } else {
+        return '$dateTimeStr (${difference.inHours}h ${difference.inMinutes % 60}m left)';
+      }
+    } else if (difference.inDays == 1) {
+      return '$dateTimeStr (Tomorrow)';
+    } else {
+      return '$dateTimeStr (${difference.inDays} days left)';
+    }
   }
 
   Color _getTypeColor(QuestType type) {

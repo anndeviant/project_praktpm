@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'views/splash_screen.dart';
 import 'models/favorite_model.dart';
 import 'utils/hive_box.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,8 @@ void main() async {
 
   // Open Hive boxes
   await Hive.openBox<FavoriteQuest>(HiveBox.favorites);
+  // Initialize notification service
+  await NotificationService().initialize();
 
   runApp(const MainApp());
 }

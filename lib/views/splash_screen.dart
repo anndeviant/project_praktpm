@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animate_do/animate_do.dart';
 import 'onboarding_screen.dart';
 import 'auth_wrapper.dart';
+import '../utils/notification_helper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,12 +19,16 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _checkFirstTime();
   }
-
   void _checkFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('first_time') ?? true;
 
     await Future.delayed(const Duration(seconds: 3));
+
+    // Request notification permission
+    if (mounted) {
+      await NotificationHelper.requestPermission(context);
+    }
 
     if (mounted) {
       if (isFirstTime) {
