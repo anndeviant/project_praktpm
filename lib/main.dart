@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
-import 'views/auth_wrapper.dart';
+import 'views/splash_screen.dart';
 import 'models/favorite_model.dart';
 import 'utils/hive_box.dart';
 
@@ -29,6 +29,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Manajemen KKN', home: const AuthWrapper());
+    return MaterialApp(title: 'Manajemen KKN', home: const SplashScreen());
   }
 }

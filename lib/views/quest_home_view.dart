@@ -26,6 +26,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
   String? _selectedCityName;
   bool _isLoading = true;
   final Logger _logger = Logger();
+  bool _disposed = false; // Flag untuk mengecek apakah widget sudah di-dispose
 
   @override
   void initState() {
@@ -55,14 +56,15 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       }
 
       // Load prayer schedule
-      await _loadPrayerSchedule();
-    } catch (e) {
+      await _loadPrayerSchedule();    } catch (e) {
       _logger.e('Error loading data: $e');
     } finally {
-      setState(() => _isLoading = false);
+      // Cek apakah widget masih mounted sebelum memanggil setState
+      if (mounted && !_disposed) {
+        setState(() => _isLoading = false);
+      }
     }
   }
-
   Future<void> _loadPrayerSchedule() async {
     try {
       _selectedCityName = await _prayerService.getSelectedCityName();
@@ -70,6 +72,13 @@ class _QuestHomeViewState extends State<QuestHomeView> {
     } catch (e) {
       _logger.e('Error loading prayer schedule: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    // Set flag bahwa widget sudah di-dispose
+    _disposed = true;
+    super.dispose();
   }
 
   @override
@@ -174,11 +183,13 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       context: context,
       builder:
           (context) => _CitySearchDialog(
-            prayerService: _prayerService,
-            onCitySelected: (cityId, cityName) async {
+            prayerService: _prayerService,            onCitySelected: (cityId, cityName) async {
               await _prayerService.saveSelectedCity(cityId, cityName);
               await _loadPrayerSchedule();
-              setState(() {});
+              // Cek apakah widget masih mounted sebelum memanggil setState
+              if (mounted && !_disposed) {
+                setState(() {});
+              }
             },
           ),
     );
