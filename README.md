@@ -340,4 +340,4 @@ Project ini dibuat untuk keperluan akademik - Praktikum Teknologi dan Pemrograma
 
 ---
 
-**© 2024 KKN Quest - Praktikum TPM IF-G**
+**© 2025 KKN Quest - Praktikum TPM IF-G**
