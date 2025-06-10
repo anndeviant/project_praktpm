@@ -1,6 +1,6 @@
 name: project_praktpm
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -20,6 +20,10 @@ dependencies:
   intl: ^0.20.2
   logger: ^2.5.0
   shared_preferences: ^2.5.3
+  lottie: ^3.1.2
+  animate_do: ^3.3.4
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +32,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # assets:
+  #   - assets/images/
