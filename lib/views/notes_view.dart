@@ -13,9 +13,10 @@ class NotesView extends StatefulWidget {
   State<NotesView> createState() => _NotesViewState();
 }
 
-class _NotesViewState extends State<NotesView> {  final AuthService _authService = AuthService();
+class _NotesViewState extends State<NotesView> {
+  final AuthService _authService = AuthService();
   final NoteService _noteService = NoteService();
-  
+
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   @override
@@ -32,7 +33,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
   @override
   Widget build(BuildContext context) {
     final userId = _authService.currentUser?.uid;
-    
+
     if (userId == null) {
       return Scaffold(
         backgroundColor: QuestTheme.backgroundLight,
@@ -57,9 +58,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: QuestTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         ),
       ),
       body: Container(
@@ -83,11 +82,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
               ),
               child: const Column(
                 children: [
-                  Icon(
-                    Icons.note_alt,
-                    size: 48,
-                    color: Colors.white,
-                  ),
+                  Icon(Icons.note_alt, size: 48, color: Colors.white),
                   SizedBox(height: 8),
                   Text(
                     'My Notes',
@@ -99,19 +94,19 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                   ),
                   Text(
                     'Organize your thoughts and ideas',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-            
+
             // Search Section
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -124,18 +119,27 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: 'Search notes...',
-                    prefixIcon: const Icon(Icons.search, color: QuestTheme.textSecondary),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: QuestTheme.textSecondary,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: QuestTheme.textMuted.withOpacity(0.3)),
+                      borderSide: BorderSide(
+                        color: QuestTheme.textMuted.withValues(alpha: 0.3),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: QuestTheme.textMuted.withOpacity(0.3)),
+                      borderSide: BorderSide(
+                        color: QuestTheme.textMuted.withValues(alpha: 0.3),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: QuestTheme.primaryBlue),
+                      borderSide: const BorderSide(
+                        color: QuestTheme.primaryBlue,
+                      ),
                     ),
                     filled: true,
                     fillColor: QuestTheme.surfaceColor,
@@ -143,7 +147,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                 ),
               ),
             ),
-            
+
             // Notes List
             Expanded(
               child: Padding(
@@ -176,9 +180,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                             const SizedBox(height: 8),
                             const Text(
                               'Please try again later',
-                              style: TextStyle(
-                                color: QuestTheme.textSecondary,
-                              ),
+                              style: TextStyle(color: QuestTheme.textSecondary),
                             ),
                           ],
                         ),
@@ -186,12 +188,21 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                     }
 
                     List<Note> notes = snapshot.data ?? [];
-                    
+
                     // Filter notes based on search query
                     if (_searchQuery.isNotEmpty) {
-                      notes = notes.where((note) =>
-                          note.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                          note.content.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+                      notes =
+                          notes
+                              .where(
+                                (note) =>
+                                    note.title.toLowerCase().contains(
+                                      _searchQuery.toLowerCase(),
+                                    ) ||
+                                    note.content.toLowerCase().contains(
+                                      _searchQuery.toLowerCase(),
+                                    ),
+                              )
+                              .toList();
                     }
 
                     if (notes.isEmpty) {
@@ -254,9 +265,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const NoteEditorView(),
-            ),
+            MaterialPageRoute(builder: (context) => const NoteEditorView()),
           );
         },
         backgroundColor: QuestTheme.primaryBlue,
@@ -273,7 +282,10 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
         borderRadius: BorderRadius.circular(16),
         boxShadow: QuestTheme.cardShadow,
         border: Border.all(
-          color: note.isPinned ? QuestTheme.accentGold.withOpacity(0.3) : Colors.transparent,
+          color:
+              note.isPinned
+                  ? QuestTheme.accentGold.withValues(alpha: 0.3)
+                  : Colors.transparent,
           width: 2,
         ),
       ),
@@ -281,9 +293,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => NoteDetailView(note: note),
-            ),
+            MaterialPageRoute(builder: (context) => NoteDetailView(note: note)),
           );
         },
         borderRadius: BorderRadius.circular(16),
@@ -297,9 +307,12 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                 children: [
                   if (note.isPinned)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: QuestTheme.accentGold.withOpacity(0.2),
+                        color: QuestTheme.accentGold.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Row(
@@ -324,9 +337,12 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                     ),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: QuestTheme.primaryBlue.withOpacity(0.1),
+                      color: QuestTheme.primaryBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -341,7 +357,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                 ],
               ),
               const SizedBox(height: 12),
-              
+
               // Title
               Text(
                 note.title,
@@ -354,7 +370,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
-              
+
               // Content Preview
               Text(
                 note.content,
@@ -367,7 +383,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 12),
-              
+
               // Footer
               Row(
                 children: [
@@ -390,17 +406,20 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
                     icon: Icon(
                       note.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
                       size: 20,
-                      color: note.isPinned ? QuestTheme.accentGold : QuestTheme.textMuted,
+                      color:
+                          note.isPinned
+                              ? QuestTheme.accentGold
+                              : QuestTheme.textMuted,
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6), // Reduced spacing
                   IconButton(
                     onPressed: () => _editNote(note),
                     icon: const Icon(
                       Icons.edit,
-                      size: 20,
+                      size: 18, // Reduced icon size
                       color: QuestTheme.textMuted,
                     ),
                     padding: EdgeInsets.zero,
@@ -418,7 +437,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}d ago';
     } else if (difference.inHours > 0) {
@@ -435,9 +454,9 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
       await _noteService.togglePinNote(note.id, !note.isPinned);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating note: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error updating note: $e')));
       }
     }
   }
@@ -445,9 +464,7 @@ class _NotesViewState extends State<NotesView> {  final AuthService _authService
   void _editNote(Note note) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => NoteEditorView(note: note),
-      ),
+      MaterialPageRoute(builder: (context) => NoteEditorView(note: note)),
     );
   }
 

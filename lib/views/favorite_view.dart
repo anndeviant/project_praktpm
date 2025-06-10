@@ -57,6 +57,7 @@ class _FavoriteViewState extends State<FavoriteView> {
       setState(() => _isDoaLoading = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,22 +70,23 @@ class _FavoriteViewState extends State<FavoriteView> {
             colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
           ),
         ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildRandomDoaCard(),
-                    if (_favorites.isEmpty)
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: _buildEmptyState(),
-                      )
-                    else
-                      _buildFavoritesList(),
-                  ],
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildRandomDoaCard(),
+                      if (_favorites.isEmpty)
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: _buildEmptyState(),
+                        )
+                      else
+                        _buildFavoritesList(),
+                    ],
+                  ),
                 ),
-              ),
       ),
     );
   }
@@ -193,16 +195,26 @@ class _FavoriteViewState extends State<FavoriteView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.favorite_border, size: 80, color: Colors.grey),
-          SizedBox(height: 16),
+          Icon(
+            Icons.favorite_border,
+            size: 64,
+            color: Colors.grey,
+          ), // Reduced icon size
+          SizedBox(height: 12), // Reduced spacing
           Text(
             'No Favorites Yet',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ), // Reduced font size
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 6), // Reduced spacing
           Text(
             'Add quests to favorites from the quest list',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+            ), // Reduced font size
             textAlign: TextAlign.center,
           ),
         ],
@@ -235,7 +247,6 @@ class _FavoriteViewState extends State<FavoriteView> {
           icon: const Icon(Icons.delete_outline),
         ),
         onTap: () {
-          // TODO: Navigate to quest detail or quest list with filter
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Opening ${favorite.title}')));

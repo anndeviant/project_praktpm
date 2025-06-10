@@ -1,5 +1,4 @@
 // Background task service - currently disabled
-// TODO: Implement when workmanager package is added
 
 /*
 import 'package:workmanager/workmanager.dart';
@@ -130,10 +129,8 @@ void callbackDispatcher() {
 // Placeholder class for now
 class BackgroundTaskService {
   static Future<void> initialize() async {
-    // TODO: Implement when workmanager package is added
   }
   
   static Future<void> checkQuestDeadlines() async {
-    // TODO: Implement when workmanager package is added
   }
 }

@@ -14,12 +14,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
     _checkFirstTime();
   }
+
   void _checkFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('first_time') ?? true;
@@ -48,10 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      body: Container(
-        decoration: const BoxDecoration(
-          gradient: QuestTheme.primaryGradient,
-        ),child: Center(
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -65,13 +65,15 @@ class _SplashScreenState extends State<SplashScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [                        BoxShadow(
+                      boxShadow: [
+                        BoxShadow(
                           color: Colors.black26,
                           blurRadius: 10,
                           offset: const Offset(0, 5),
                         ),
                       ],
-                    ),                    child: const Icon(
+                    ),
+                    child: const Icon(
                       Icons.assignment_outlined,
                       size: 60,
                       color: Color(0xFF667eea),
@@ -79,26 +81,28 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 24), // Reduced spacing
               FadeInUp(
                 duration: const Duration(milliseconds: 1200),
-                delay: const Duration(milliseconds: 500),                child: const Text(
+                delay: const Duration(milliseconds: 500),
+                child: const Text(
                   'KKN Quest',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 24, // Reduced font size
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    letterSpacing: 1.5,
+                    letterSpacing: 1.2,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8), // Reduced spacing
               FadeInUp(
                 duration: const Duration(milliseconds: 1000),
-                delay: const Duration(milliseconds: 800),                child: const Text(
+                delay: const Duration(milliseconds: 800),
+                child: const Text(
                   'Petualangan KKN Dimulai',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14, // Reduced font size
                     color: Colors.white70,
                   ),
                 ),

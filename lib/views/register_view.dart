@@ -11,7 +11,8 @@ class RegisterView extends StatefulWidget {
   State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> with TickerProviderStateMixin {
+class _RegisterViewState extends State<RegisterView>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _namaLengkapController = TextEditingController();
   final _kodeKknController = TextEditingController();
@@ -76,27 +77,27 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: QuestTheme.primaryGradient,
-        ),
+        decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+              ), // Reduced padding
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    SizedBox(height: size.height * 0.05),
-                    
+                    SizedBox(height: size.height * 0.03), // Reduced height
                     // Back Button
                     Row(
                       children: [
@@ -105,91 +106,93 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                           child: IconButton(
                             onPressed: () => Navigator.pop(context),
                             icon: Container(
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(
+                                6,
+                              ), // Reduced padding
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
                                 Icons.arrow_back_ios,
                                 color: Colors.white,
-                                size: 20,
+                                size: 18, // Reduced icon size
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    
-                    const SizedBox(height: 20),
-                    
-                    // Hero Section
+
+                    const SizedBox(height: 16), // Reduced spacing
+                    // Hero Section - more compact
                     FadeInDown(
                       duration: const Duration(milliseconds: 800),
                       child: Container(
-                        width: 100,
-                        height: 100,
+                        width: 80, // Reduced size
+                        height: 80,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             width: 2,
                           ),
                         ),
                         child: Icon(
                           Icons.person_add_outlined,
-                          size: 50,
+                          size: 40, // Reduced icon size
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 24),
-                    
+
+                    const SizedBox(height: 20), // Reduced spacing
+
                     FadeInDown(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 200),
                       child: Text(
                         'Bergabung Quest',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24, // Reduced font size
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1.2,
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 8),
-                    
+
+                    const SizedBox(height: 6), // Reduced spacing
+
                     FadeInDown(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 400),
                       child: Text(
                         'Daftar untuk memulai petualangan KKN',
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14, // Reduced font size
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    
-                    const SizedBox(height: 40),
-                    
-                    // Register Form Card
+
+                    const SizedBox(height: 32), // Reduced spacing
+                    // Register Form Card - more compact
                     FadeInUp(
                       duration: const Duration(milliseconds: 800),
                       delay: const Duration(milliseconds: 600),
                       child: Container(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(20), // Reduced padding
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(
+                            16,
+                          ), // Reduced radius
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -197,45 +200,78 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                         ),
                         child: Column(
                           children: [
-                            // Error Message
+                            // Error Message - more compact
                             if (_errorMessage != null)
                               Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(
+                                  bottom: 12,
+                                ), // Reduced margin
+                                padding: const EdgeInsets.all(
+                                  10,
+                                ), // Reduced padding
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,
-                                  border: Border.all(color: Colors.red.shade200),
-                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.red.shade200,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ), // Reduced radius
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.error_outline, color: Colors.red),
-                                    const SizedBox(width: 12),
+                                    Icon(
+                                      Icons.error_outline,
+                                      color: Colors.red,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         _errorMessage!,
-                                        style: TextStyle(color: Colors.red.shade700),
+                                        style: TextStyle(
+                                          color: Colors.red.shade700,
+                                          fontSize: 13, // Reduced font size
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            
+
                             // Nama Lengkap Field
                             TextFormField(
-                              controller: _namaLengkapController,                              decoration: InputDecoration(
+                              controller: _namaLengkapController,
+                              decoration: InputDecoration(
                                 labelText: 'Nama Lengkap',
-                                prefixIcon: Icon(Icons.person_outline, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(
+                                  fontSize: 14,
+                                ), // Reduced font size
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: const Color(0xFF667eea),
+                                  size: 20,
+                                ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ), // Compact padding
                               ),
+                              style: TextStyle(
+                                fontSize: 14,
+                              ), // Reduced font size
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Nama lengkap harus diisi';
@@ -246,25 +282,42 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                 return null;
                               },
                             ),
-                            
-                            const SizedBox(height: 16),
-                            
+
+                            const SizedBox(height: 12), // Reduced spacing
                             // Kode KKN Field
                             TextFormField(
-                              controller: _kodeKknController,                              decoration: InputDecoration(
+                              controller: _kodeKknController,
+                              decoration: InputDecoration(
                                 labelText: 'Kode KKN',
-                                prefixIcon: Icon(Icons.group_outlined, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(
+                                  fontSize: 14,
+                                ), // Reduced font size
+                                prefixIcon: Icon(
+                                  Icons.group_outlined,
+                                  color: const Color(0xFF667eea),
+                                  size: 20,
+                                ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 hintText: 'Contoh: KKN001',
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ), // Compact padding
                               ),
+                              style: TextStyle(
+                                fontSize: 14,
+                              ), // Reduced font size
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Kode KKN harus diisi';
@@ -272,25 +325,42 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                 return null;
                               },
                             ),
-                            
-                            const SizedBox(height: 16),
-                            
+
+                            const SizedBox(height: 12), // Reduced spacing
                             // Email Field
                             TextFormField(
-                              controller: _emailController,                              decoration: InputDecoration(
+                              controller: _emailController,
+                              decoration: InputDecoration(
                                 labelText: 'Email',
-                                prefixIcon: Icon(Icons.email_outlined, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(
+                                  fontSize: 14,
+                                ), // Reduced font size
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: const Color(0xFF667eea),
+                                  size: 20,
+                                ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ), // Compact padding
                               ),
                               keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                fontSize: 14,
+                              ), // Reduced font size
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Email harus diisi';
@@ -303,18 +373,27 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                 return null;
                               },
                             ),
-                            
-                            const SizedBox(height: 16),
-                            
+
+                            const SizedBox(height: 12), // Reduced spacing
                             // Password Field
                             TextFormField(
                               controller: _passwordController,
-                              obscureText: _obscurePassword,                              decoration: InputDecoration(
+                              obscureText: _obscurePassword,
+                              decoration: InputDecoration(
                                 labelText: 'Password',
-                                prefixIcon: Icon(Icons.lock_outlined, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(
+                                  fontSize: 14,
+                                ), // Reduced font size
+                                prefixIcon: Icon(
+                                  Icons.lock_outlined,
+                                  color: const Color(0xFF667eea),
+                                  size: 20,
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                     color: Colors.grey,
                                   ),
                                   onPressed: () {
@@ -324,16 +403,26 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                   },
                                 ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 hintText: 'Minimal 6 karakter',
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ), // Compact padding
                               ),
+                              style: TextStyle(
+                                fontSize: 14,
+                              ), // Reduced font size
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Password harus diisi';
@@ -344,74 +433,85 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                 return null;
                               },
                             ),
-                            
+
                             const SizedBox(height: 24),
-                            
-                            // Register Button
+
+                            // Register Button - more compact
                             SizedBox(
                               width: double.infinity,
-                              height: 56,
-                              child: _isLoading                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFF667eea),
-                                            const Color(0xFF764ba2),
+                              height: 48, // Reduced height
+                              child:
+                                  _isLoading
+                                      ? Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF667eea),
+                                              const Color(0xFF764ba2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ), // Reduced radius
+                                        ),
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        ),
+                                      )
+                                      : Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF667eea),
+                                              const Color(0xFF764ba2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(
+                                                0xFF667eea,
+                                              ).withValues(alpha: 0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            ),
                                           ],
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFF667eea),
-                                            const Color(0xFF764ba2),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFF667eea).withOpacity(0.3),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 4),
+                                        child: ElevatedButton(
+                                          onPressed: _register,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: _register,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Mulai Petualangan',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
+                                          child: const Text(
+                                            'Mulai Petualangan',
+                                            style: TextStyle(
+                                              fontSize: 16, // Reduced font size
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Login Link
+
+                    const SizedBox(height: 24), // Reduced spacing
+                    // Login Link - more compact
                     FadeInUp(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 800),
@@ -421,7 +521,8 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                           Text(
                             'Sudah punya akun? ',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontSize: 13, // Reduced font size
                             ),
                           ),
                           GestureDetector(
@@ -432,14 +533,15 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
+                                fontSize: 13, // Reduced font size
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
-                    const SizedBox(height: 32),
+
+                    const SizedBox(height: 24), // Reduced spacing
                   ],
                 ),
               ),

@@ -38,9 +38,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: QuestTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         ),
         actions: [
           IconButton(
@@ -52,21 +50,22 @@ class _CreateQuestViewState extends State<CreateQuestView> {
             IconButton(onPressed: _createQuest, icon: const Icon(Icons.save)),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    QuestTheme.backgroundLight,
-                    QuestTheme.surfaceColor,
-                  ],
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      QuestTheme.backgroundLight,
+                      QuestTheme.surfaceColor,
+                    ],
+                  ),
                 ),
+                child: _buildForm(),
               ),
-              child: _buildForm(),
-            ),
     );
   }
 
@@ -86,11 +85,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
             ),
             child: const Column(
               children: [
-                Icon(
-                  Icons.add_task,
-                  size: 48,
-                  color: Colors.white,
-                ),
+                Icon(Icons.add_task, size: 48, color: Colors.white),
                 SizedBox(height: 8),
                 Text(
                   'Create New Quest',
@@ -102,17 +97,14 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                 ),
                 Text(
                   'Design a new challenge for your KKN journey',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.white70),
                   textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
-          
+
           // Form Card
           Container(
             padding: const EdgeInsets.all(20),
@@ -127,19 +119,32 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildSectionHeader('Quest Details', Icons.info_outline),
-                  const SizedBox(height: 16),
-                  
+                  const SizedBox(height: 12), // Reduced spacing
+
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
                       labelText: 'Quest Title',
-                      prefixIcon: const Icon(Icons.title),
+                      labelStyle: const TextStyle(
+                        fontSize: 14,
+                      ), // Reduced font size
+                      prefixIcon: const Icon(
+                        Icons.title,
+                        size: 20,
+                      ), // Reduced icon size
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(
+                          10,
+                        ), // Reduced radius
                       ),
                       filled: true,
                       fillColor: QuestTheme.surfaceColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12, // Compact padding
+                      ),
                     ),
+                    style: const TextStyle(fontSize: 14), // Reduced font size
                     validator: (value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Title is required';
@@ -147,19 +152,25 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
-                  
+                  const SizedBox(height: 12), // Reduced spacing
+
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
                       labelText: 'Description',
-                      prefixIcon: const Icon(Icons.description),
+                      labelStyle: const TextStyle(fontSize: 14),
+                      prefixIcon: const Icon(Icons.description, size: 20),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       filled: true,
                       fillColor: QuestTheme.surfaceColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
+                    style: const TextStyle(fontSize: 14),
                     maxLines: 3,
                     validator: (value) {
                       if (value?.trim().isEmpty ?? true) {
@@ -168,16 +179,17 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
-                  
+                  const SizedBox(height: 20), // Reduced spacing
+
                   _buildSectionHeader('Quest Type', Icons.category),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   _buildQuestTypeSelector(),
-                  const SizedBox(height: 24),
-                  
+                  const SizedBox(height: 20),
+
                   _buildSectionHeader('Rewards & Progress', Icons.emoji_events),
-                  const SizedBox(height: 16),
-                  
+                  const SizedBox(height: 12),
+
+                  // Compact reward fields
                   Row(
                     children: [
                       Expanded(
@@ -185,13 +197,19 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                           controller: _xpController,
                           decoration: InputDecoration(
                             labelText: 'XP Reward',
-                            prefixIcon: const Icon(Icons.star),
+                            labelStyle: const TextStyle(fontSize: 14),
+                            prefixIcon: const Icon(Icons.star, size: 20),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             filled: true,
                             fillColor: QuestTheme.surfaceColor,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                           ),
+                          style: const TextStyle(fontSize: 14),
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
@@ -205,19 +223,28 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10), // Reduced spacing
                       Expanded(
                         child: TextFormField(
                           controller: _costController,
                           decoration: InputDecoration(
                             labelText: 'Cost (Rp)',
-                            prefixIcon: const Icon(Icons.attach_money),
+                            labelStyle: const TextStyle(fontSize: 14),
+                            prefixIcon: const Icon(
+                              Icons.attach_money,
+                              size: 20,
+                            ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             filled: true,
                             fillColor: QuestTheme.surfaceColor,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                           ),
+                          style: const TextStyle(fontSize: 14),
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
@@ -233,20 +260,26 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  
+                  const SizedBox(height: 12),
+
                   TextFormField(
                     controller: _maxProgressController,
                     decoration: InputDecoration(
                       labelText: 'Max Progress',
-                      prefixIcon: const Icon(Icons.track_changes),
+                      labelStyle: const TextStyle(fontSize: 14),
+                      prefixIcon: const Icon(Icons.track_changes, size: 20),
                       helperText: 'Number of steps to complete this quest',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       filled: true,
                       fillColor: QuestTheme.surfaceColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
+                    style: const TextStyle(fontSize: 14),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value?.isEmpty ?? true) {
@@ -260,12 +293,12 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  
+
                   _buildSectionHeader('Deadline (Optional)', Icons.schedule),
                   const SizedBox(height: 16),
                   _buildDeadlineSelector(),
                   const SizedBox(height: 32),
-                  
+
                   ElevatedButton(
                     onPressed: _createQuest,
                     style: ElevatedButton.styleFrom(
@@ -309,11 +342,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
             gradient: QuestTheme.primaryGradient,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 20,
-          ),
+          child: Icon(icon, color: Colors.white, size: 20),
         ),
         const SizedBox(width: 12),
         Text(
@@ -336,39 +365,49 @@ class _CreateQuestViewState extends State<CreateQuestView> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: QuestType.values.map((type) {
-          final isSelected = _selectedType == type;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _selectedType = type),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected ? QuestTheme.primaryBlue : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      _getQuestTypeIcon(type),
-                      color: isSelected ? Colors.white : QuestTheme.textSecondary,
-                      size: 24,
+        children:
+            QuestType.values.map((type) {
+              final isSelected = _selectedType == type;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _selectedType = type),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? QuestTheme.primaryBlue
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      type.name.toUpperCase(),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : QuestTheme.textSecondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          _getQuestTypeIcon(type),
+                          color:
+                              isSelected
+                                  ? Colors.white
+                                  : QuestTheme.textSecondary,
+                          size: 24,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          type.name.toUpperCase(),
+                          style: TextStyle(
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : QuestTheme.textSecondary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -379,7 +418,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
       decoration: BoxDecoration(
         color: QuestTheme.surfaceColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: QuestTheme.textMuted.withOpacity(0.3)),
+        border: Border.all(color: QuestTheme.textMuted.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,18 +433,26 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                     decoration: BoxDecoration(
                       color: QuestTheme.cardBackground,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: QuestTheme.textMuted.withOpacity(0.3)),
+                      border: Border.all(
+                        color: QuestTheme.textMuted.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.calendar_today, color: QuestTheme.textSecondary),
+                        Icon(
+                          Icons.calendar_today,
+                          color: QuestTheme.textSecondary,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           _deadline != null
                               ? '${_deadline!.day}/${_deadline!.month}/${_deadline!.year}'
                               : 'Select date',
                           style: TextStyle(
-                            color: _deadline != null ? QuestTheme.textPrimary : QuestTheme.textSecondary,
+                            color:
+                                _deadline != null
+                                    ? QuestTheme.textPrimary
+                                    : QuestTheme.textSecondary,
                           ),
                         ),
                       ],
@@ -420,15 +467,23 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _deadline != null ? QuestTheme.cardBackground : QuestTheme.surfaceColor,
+                      color:
+                          _deadline != null
+                              ? QuestTheme.cardBackground
+                              : QuestTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: QuestTheme.textMuted.withOpacity(0.3)),
+                      border: Border.all(
+                        color: QuestTheme.textMuted.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.access_time,
-                          color: _deadline != null ? QuestTheme.textSecondary : QuestTheme.textMuted,
+                          color:
+                              _deadline != null
+                                  ? QuestTheme.textSecondary
+                                  : QuestTheme.textMuted,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -436,9 +491,10 @@ class _CreateQuestViewState extends State<CreateQuestView> {
                               ? '${_deadlineTime!.hour.toString().padLeft(2, '0')}:${_deadlineTime!.minute.toString().padLeft(2, '0')}'
                               : 'Select time',
                           style: TextStyle(
-                            color: _deadline != null && _deadlineTime != null
-                                ? QuestTheme.textPrimary
-                                : QuestTheme.textMuted,
+                            color:
+                                _deadline != null && _deadlineTime != null
+                                    ? QuestTheme.textPrimary
+                                    : QuestTheme.textMuted,
                           ),
                         ),
                       ],
@@ -453,7 +509,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: QuestTheme.primaryBlue.withOpacity(0.1),
+                color: QuestTheme.primaryBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -504,7 +560,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
 
   Future<void> _selectDeadlineTime() async {
     if (_deadline == null) return;
-    
+
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -518,7 +574,8 @@ class _CreateQuestViewState extends State<CreateQuestView> {
     if (_deadline == null) return '';
     String dateStr = '${_deadline!.day}/${_deadline!.month}/${_deadline!.year}';
     if (_deadlineTime != null) {
-      String timeStr = '${_deadlineTime!.hour.toString().padLeft(2, '0')}:${_deadlineTime!.minute.toString().padLeft(2, '0')}';
+      String timeStr =
+          '${_deadlineTime!.hour.toString().padLeft(2, '0')}:${_deadlineTime!.minute.toString().padLeft(2, '0')}';
       return '$dateStr at $timeStr';
     }
     return dateStr;
@@ -535,11 +592,7 @@ class _CreateQuestViewState extends State<CreateQuestView> {
         _deadlineTime!.minute,
       );
     }
-    return DateTime(
-      _deadline!.year,
-      _deadline!.month,
-      _deadline!.day,
-    );
+    return DateTime(_deadline!.year, _deadline!.month, _deadline!.day);
   }
 
   Future<void> _testNotification() async {
@@ -552,9 +605,9 @@ class _CreateQuestViewState extends State<CreateQuestView> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -598,9 +651,9 @@ class _CreateQuestViewState extends State<CreateQuestView> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       setState(() => _isLoading = false);

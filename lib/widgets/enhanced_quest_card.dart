@@ -24,7 +24,7 @@ class EnhancedQuestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final typeColor = QuestTypeHelper.getQuestTypeColor(quest.type.name);
     final typeIcon = QuestTypeHelper.getQuestTypeIcon(quest.type.name);
-    
+
     return QuestCard(
       onTap: onTap,
       child: Column(
@@ -40,18 +40,18 @@ class EnhancedQuestCard extends StatelessWidget {
                     Text(
                       quest.title,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16, // Reduced font size
                         fontWeight: FontWeight.bold,
                         color: QuestTheme.textPrimary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2), // Reduced spacing
                     Text(
                       quest.description,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 12, // Reduced font size
                         color: QuestTheme.textSecondary,
                       ),
                       maxLines: 2,
@@ -62,65 +62,90 @@ class EnhancedQuestCard extends StatelessWidget {
               ),
               if (onFavorite != null)
                 Container(
+                  width: 36, // Reduced size
+                  height: 36,
                   decoration: BoxDecoration(
-                    color: isFavorite ? Colors.red.shade50 : QuestTheme.surfaceColor,
+                    color:
+                        isFavorite
+                            ? Colors.red.shade50
+                            : QuestTheme.surfaceColor,
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
+                    padding: EdgeInsets.zero,
                     onPressed: onFavorite,
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: isFavorite ? Colors.red : QuestTheme.textSecondary,
+                      size: 18, // Reduced icon size
                     ),
                   ),
                 ),
             ],
           ),
-          
-          const SizedBox(height: 16),
-          
-          // Quest info chips
+
+          const SizedBox(height: 12), // Reduced spacing
+          // Quest info chips - more compact
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 6, // Reduced spacing
+            runSpacing: 6,
             children: [
               QuestChip(
                 label: quest.type.name.toUpperCase(),
                 icon: typeIcon,
-                backgroundColor: typeColor.withOpacity(0.1),
+                backgroundColor: typeColor.withValues(alpha: 0.1),
                 textColor: typeColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ), // Compact padding
               ),
               if (quest.xpReward > 0)
                 QuestChip(
                   label: '${quest.xpReward} XP',
                   icon: Icons.star,
-                  backgroundColor: QuestTheme.accentGold.withOpacity(0.1),
+                  backgroundColor: QuestTheme.accentGold.withValues(alpha: 0.1),
                   textColor: QuestTheme.accentGold,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                 ),
               if (quest.cost > 0)
                 QuestChip(
                   label: 'Rp${quest.cost.toStringAsFixed(0)}',
                   icon: Icons.attach_money,
-                  backgroundColor: QuestTheme.accentOrange.withOpacity(0.1),
+                  backgroundColor: QuestTheme.accentOrange.withValues(
+                    alpha: 0.1,
+                  ),
                   textColor: QuestTheme.accentOrange,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                 ),
             ],
           ),
-          
-          // Deadline info
+
+          // Deadline info - more compact
           if (quest.deadline != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 8), // Reduced spacing
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 6,
+              ), // Compact padding
               decoration: BoxDecoration(
-                color: quest.isExpired 
-                    ? QuestTheme.errorColor.withOpacity(0.1)
-                    : QuestTheme.warningColor.withOpacity(0.1),
+                color:
+                    quest.isExpired
+                        ? QuestTheme.errorColor.withValues(alpha: 0.1)
+                        : QuestTheme.warningColor.withValues(alpha: 0.1),
                 borderRadius: QuestTheme.smallBorderRadius,
                 border: Border.all(
-                  color: quest.isExpired 
-                      ? QuestTheme.errorColor.withOpacity(0.3)
-                      : QuestTheme.warningColor.withOpacity(0.3),
+                  color:
+                      quest.isExpired
+                          ? QuestTheme.errorColor.withValues(alpha: 0.3)
+                          : QuestTheme.warningColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Row(
@@ -128,26 +153,32 @@ class EnhancedQuestCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.schedule,
-                    size: 16,
-                    color: quest.isExpired ? QuestTheme.errorColor : QuestTheme.warningColor,
+                    size: 14, // Reduced icon size
+                    color:
+                        quest.isExpired
+                            ? QuestTheme.errorColor
+                            : QuestTheme.warningColor,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
                   Text(
                     _formatDeadline(quest.deadline!),
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 11, // Reduced font size
                       fontWeight: FontWeight.w500,
-                      color: quest.isExpired ? QuestTheme.errorColor : QuestTheme.warningColor,
+                      color:
+                          quest.isExpired
+                              ? QuestTheme.errorColor
+                              : QuestTheme.warningColor,
                     ),
                   ),
                 ],
               ),
             ),
           ],
-          
-          // Progress section
+
+          // Progress section - more compact
           if (showProgress) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
@@ -160,7 +191,7 @@ class EnhancedQuestCard extends StatelessWidget {
                           Text(
                             'Progress',
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 11, // Reduced font size
                               color: QuestTheme.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
@@ -168,17 +199,18 @@ class EnhancedQuestCard extends StatelessWidget {
                           Text(
                             '${quest.progress}/${quest.maxProgress}',
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 11,
                               color: QuestTheme.textSecondary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4), // Reduced spacing
                       QuestProgressIndicator(
                         progress: quest.progressPercentage,
                         valueColor: typeColor,
+                        height: 6, // Thinner progress bar
                       ),
                     ],
                   ),
@@ -186,39 +218,44 @@ class EnhancedQuestCard extends StatelessWidget {
               ],
             ),
           ],
-          
-          // Action buttons
+
+          // Action buttons - more compact
           if (!quest.isCompleted && onProgress != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: QuestButton(
-                    text: quest.progress >= quest.maxProgress - 1 
-                        ? 'Complete Quest' 
-                        : 'Update Progress',
+                    text:
+                        quest.progress >= quest.maxProgress - 1
+                            ? 'Complete Quest'
+                            : 'Update Progress',
                     onPressed: onProgress,
-                    icon: quest.progress >= quest.maxProgress - 1 
-                        ? Icons.check_circle 
-                        : Icons.add_task,
+                    icon:
+                        quest.progress >= quest.maxProgress - 1
+                            ? Icons.check_circle
+                            : Icons.add_task,
                     isPrimary: quest.progress >= quest.maxProgress - 1,
                   ),
                 ),
               ],
             ),
           ],
-          
-          // Completed indicator
+
+          // Completed indicator - more compact
           if (quest.isCompleted) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ), // Compact padding
               decoration: BoxDecoration(
-                color: QuestTheme.successColor.withOpacity(0.1),
+                color: QuestTheme.successColor.withValues(alpha: 0.1),
                 borderRadius: QuestTheme.smallBorderRadius,
                 border: Border.all(
-                  color: QuestTheme.successColor.withOpacity(0.3),
+                  color: QuestTheme.successColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Row(
@@ -227,15 +264,15 @@ class EnhancedQuestCard extends StatelessWidget {
                   Icon(
                     Icons.check_circle,
                     color: QuestTheme.successColor,
-                    size: 20,
+                    size: 16, // Reduced icon size
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Text(
                     'Quest Completed! 🎉',
                     style: TextStyle(
                       color: QuestTheme.successColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 12, // Reduced font size
                     ),
                   ),
                 ],
@@ -250,7 +287,7 @@ class EnhancedQuestCard extends StatelessWidget {
   String _formatDeadline(DateTime deadline) {
     final now = DateTime.now();
     final difference = deadline.difference(now);
-    
+
     if (difference.isNegative) {
       return 'Expired';
     } else if (difference.inDays == 0) {
@@ -288,7 +325,7 @@ class QuestStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColor = color ?? QuestTheme.primaryBlue;
-    
+
     return QuestCard(
       onTap: onTap,
       child: Column(
@@ -299,14 +336,10 @@ class QuestStatsCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: cardColor.withOpacity(0.1),
+                  color: cardColor.withValues(alpha: 0.1),
                   borderRadius: QuestTheme.smallBorderRadius,
                 ),
-                child: Icon(
-                  icon,
-                  color: cardColor,
-                  size: 24,
-                ),
+                child: Icon(icon, color: cardColor, size: 24),
               ),
               const Spacer(),
               if (onTap != null)
@@ -339,10 +372,7 @@ class QuestStatsCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               subtitle!,
-              style: const TextStyle(
-                fontSize: 12,
-                color: QuestTheme.textMuted,
-              ),
+              style: const TextStyle(fontSize: 12, color: QuestTheme.textMuted),
             ),
           ],
         ],
@@ -380,7 +410,7 @@ class LevelProgressCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: QuestTheme.accentGold.withOpacity(0.3),
+                      color: QuestTheme.accentGold.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),

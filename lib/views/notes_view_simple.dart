@@ -23,7 +23,6 @@ class _NotesViewState extends State<NotesView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Add note creation
         },
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,

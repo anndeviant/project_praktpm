@@ -53,7 +53,8 @@ class _QuestListViewState extends State<QuestListView> {
         } else {
           _quests = await _questService.getQuestsByKodeKkn(_kodeKkn);
         }
-      }    } catch (e) {
+      }
+    } catch (e) {
       _logger.e('Error loading quests: $e');
     } finally {
       if (mounted) {
@@ -61,6 +62,7 @@ class _QuestListViewState extends State<QuestListView> {
       }
     }
   }
+
   Future<void> _loadHijriCalendar() async {
     try {
       _hijriCalendar = await _prayerService.getHijriCalendar();
@@ -71,6 +73,7 @@ class _QuestListViewState extends State<QuestListView> {
       _logger.e('Error loading hijri calendar: $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,13 +83,16 @@ class _QuestListViewState extends State<QuestListView> {
           _buildHijriCalendarCard(),
           _buildFilterChips(),
           Expanded(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(QuestTheme.primaryBlue),
-                    ),
-                  )
-                : _buildQuestList(),
+            child:
+                _isLoading
+                    ? const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          QuestTheme.primaryBlue,
+                        ),
+                      ),
+                    )
+                    : _buildQuestList(),
           ),
         ],
       ),
@@ -97,10 +103,13 @@ class _QuestListViewState extends State<QuestListView> {
           boxShadow: QuestTheme.buttonShadow,
         ),
         child: FloatingActionButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateQuestView()),
-          ).then((_) => _loadQuests()),
+          onPressed:
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateQuestView(),
+                ),
+              ).then((_) => _loadQuests()),
           backgroundColor: Colors.transparent,
           elevation: 0,
           child: const Icon(Icons.add, color: Colors.white, size: 28),
@@ -108,6 +117,7 @@ class _QuestListViewState extends State<QuestListView> {
       ),
     );
   }
+
   Widget _buildHijriCalendarCard() {
     return Container(
       margin: const EdgeInsets.all(16.0),
@@ -117,13 +127,13 @@ class _QuestListViewState extends State<QuestListView> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            QuestTheme.successColor.withOpacity(0.1),
-            QuestTheme.successColor.withOpacity(0.05),
+            QuestTheme.successColor.withValues(alpha: 0.1),
+            QuestTheme.successColor.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: QuestTheme.largeBorderRadius,
         border: Border.all(
-          color: QuestTheme.successColor.withOpacity(0.2),
+          color: QuestTheme.successColor.withValues(alpha: 0.2),
         ),
         boxShadow: QuestTheme.cardShadow,
       ),
@@ -135,7 +145,7 @@ class _QuestListViewState extends State<QuestListView> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: QuestTheme.successColor.withOpacity(0.1),
+                  color: QuestTheme.successColor.withValues(alpha: 0.1),
                   borderRadius: QuestTheme.smallBorderRadius,
                 ),
                 child: Icon(
@@ -157,14 +167,15 @@ class _QuestListViewState extends State<QuestListView> {
           ),
           const SizedBox(height: 16),
           if (_hijriCalendar != null) ...[
+            // Hijriah calendar card - more compact
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12), // Reduced padding
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: QuestTheme.borderRadius,
                 border: Border.all(
-                  color: QuestTheme.successColor.withOpacity(0.1),
+                  color: QuestTheme.successColor.withValues(alpha: 0.1),
                 ),
               ),
               child: Column(
@@ -172,59 +183,67 @@ class _QuestListViewState extends State<QuestListView> {
                   Text(
                     _hijriCalendar!.fullDate,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16, // Reduced font size
                       fontWeight: FontWeight.bold,
                       color: QuestTheme.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6), // Reduced spacing
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Hijriah',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: QuestTheme.textSecondary,
-                              fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              'Hijriah',
+                              style: TextStyle(
+                                fontSize: 11, // Reduced font size
+                                color: QuestTheme.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          Text(
-                            _hijriCalendar!.formattedHijriDate,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: QuestTheme.successColor,
+                            const SizedBox(height: 2),
+                            Text(
+                              _hijriCalendar!.formattedHijriDate,
+                              style: TextStyle(
+                                fontSize: 12, // Reduced font size
+                                fontWeight: FontWeight.w600,
+                                color: QuestTheme.successColor,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       Container(
                         width: 1,
-                        height: 40,
+                        height: 30, // Reduced height
                         color: QuestTheme.surfaceColor,
                       ),
-                      Column(
-                        children: [
-                          Text(
-                            'Masehi',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: QuestTheme.textSecondary,
-                              fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              'Masehi',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: QuestTheme.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          Text(
-                            _hijriCalendar!.formattedGregorianDate,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: QuestTheme.textPrimary,
+                            const SizedBox(height: 2),
+                            Text(
+                              _hijriCalendar!.formattedGregorianDate,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: QuestTheme.textPrimary,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -251,6 +270,7 @@ class _QuestListViewState extends State<QuestListView> {
       ),
     );
   }
+
   Widget _buildFilterChips() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -258,82 +278,90 @@ class _QuestListViewState extends State<QuestListView> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            _buildFilterChip(
-              'All',
-              _selectedType == null,
-              () {
-                setState(() => _selectedType = null);
-                _loadQuests();
-              },
-              QuestTheme.primaryBlue,
-            ),
+            _buildFilterChip('All', _selectedType == null, () {
+              setState(() => _selectedType = null);
+              _loadQuests();
+            }, QuestTheme.primaryBlue),
             const SizedBox(width: 8),
-            _buildFilterChip(
-              'Daily',
-              _selectedType == QuestType.daily,
-              () {
-                setState(() => _selectedType = _selectedType == QuestType.daily ? null : QuestType.daily);
-                _loadQuests();
-              },
-              QuestTheme.dailyColor,
-            ),
+            _buildFilterChip('Daily', _selectedType == QuestType.daily, () {
+              setState(
+                () =>
+                    _selectedType =
+                        _selectedType == QuestType.daily
+                            ? null
+                            : QuestType.daily,
+              );
+              _loadQuests();
+            }, QuestTheme.dailyColor),
             const SizedBox(width: 8),
-            _buildFilterChip(
-              'Weekly',
-              _selectedType == QuestType.weekly,
-              () {
-                setState(() => _selectedType = _selectedType == QuestType.weekly ? null : QuestType.weekly);
-                _loadQuests();
-              },
-              QuestTheme.weeklyColor,
-            ),
+            _buildFilterChip('Weekly', _selectedType == QuestType.weekly, () {
+              setState(
+                () =>
+                    _selectedType =
+                        _selectedType == QuestType.weekly
+                            ? null
+                            : QuestType.weekly,
+              );
+              _loadQuests();
+            }, QuestTheme.weeklyColor),
             const SizedBox(width: 8),
-            _buildFilterChip(
-              'Monthly',
-              _selectedType == QuestType.monthly,
-              () {
-                setState(() => _selectedType = _selectedType == QuestType.monthly ? null : QuestType.monthly);
-                _loadQuests();
-              },
-              QuestTheme.monthlyColor,
-            ),
+            _buildFilterChip('Monthly', _selectedType == QuestType.monthly, () {
+              setState(
+                () =>
+                    _selectedType =
+                        _selectedType == QuestType.monthly
+                            ? null
+                            : QuestType.monthly,
+              );
+              _loadQuests();
+            }, QuestTheme.monthlyColor),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, VoidCallback onTap, Color color) {
+  Widget _buildFilterChip(
+    String label,
+    bool isSelected,
+    VoidCallback onTap,
+    Color color,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [color, color.withOpacity(0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
+          gradient:
+              isSelected
+                  ? LinearGradient(
+                    colors: [color, color.withValues(alpha: 0.8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                  : null,
           color: isSelected ? null : Colors.white,
           borderRadius: QuestTheme.borderRadius,
           border: Border.all(
-            color: isSelected ? Colors.transparent : color.withOpacity(0.3),
+            color:
+                isSelected ? Colors.transparent : color.withValues(alpha: 0.3),
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ] : [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                  : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -358,6 +386,7 @@ class _QuestListViewState extends State<QuestListView> {
       ),
     );
   }
+
   Widget _buildQuestList() {
     if (_quests.isEmpty) {
       return Center(
@@ -401,10 +430,13 @@ class _QuestListViewState extends State<QuestListView> {
               const SizedBox(height: 24),
               QuestButton(
                 text: 'Create Quest',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CreateQuestView()),
-                ).then((_) => _loadQuests()),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CreateQuestView(),
+                      ),
+                    ).then((_) => _loadQuests()),
                 icon: Icons.add,
               ),
             ],
@@ -431,7 +463,8 @@ class _QuestListViewState extends State<QuestListView> {
                 quest: quest,
                 isFavorite: isFavorite,
                 onFavorite: () => _toggleFavorite(quest, isFavorite),
-                onProgress: quest.isCompleted ? null : () => _updateProgress(quest),
+                onProgress:
+                    quest.isCompleted ? null : () => _updateProgress(quest),
                 showProgress: true,
               ),
             );
@@ -441,10 +474,10 @@ class _QuestListViewState extends State<QuestListView> {
     );
   }
 
-
   Future<void> _toggleFavorite(Quest quest, bool isFavorite) async {
     final userId = _authService.currentUser?.uid;
-    if (userId == null) return;    if (isFavorite) {
+    if (userId == null) return;
+    if (isFavorite) {
       await _favoriteService.removeFavorite(quest.id, userId);
     } else {
       await _favoriteService.addFavorite(quest.id, userId, quest.title);

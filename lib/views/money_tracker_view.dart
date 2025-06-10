@@ -45,6 +45,7 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
       setState(() => _isLoading = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -96,7 +97,8 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
           ],
         ),
       ),
-    );  }
+    );
+  }
 
   Widget _buildBudgetHeader() {
     return Container(
@@ -108,11 +110,7 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
       ),
       child: const Column(
         children: [
-          Icon(
-            Icons.account_balance_wallet,
-            size: 48,
-            color: Colors.white,
-          ),
+          Icon(Icons.account_balance_wallet, size: 48, color: Colors.white),
           SizedBox(height: 8),
           Text(
             'Budget Tracker',
@@ -124,10 +122,7 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
           ),
           Text(
             'Monitor your KKN expenses and budget',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.white70),
             textAlign: TextAlign.center,
           ),
         ],
@@ -164,25 +159,31 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Used Budget'),
+                const Text(
+                  'Used Budget',
+                  style: TextStyle(fontSize: 14),
+                ), // Reduced font size
                 Text(
                   'Rp${_userProfile!.usedBudget.toStringAsFixed(0)}',
-                  style: TextStyle(fontSize: 18, color: Colors.red.shade600),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.red.shade600,
+                  ), // Reduced font size
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6), // Reduced spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Remaining Budget'),
+                const Text('Remaining Budget', style: TextStyle(fontSize: 14)),
                 Text(
                   'Rp${_userProfile!.remainingBudget.toStringAsFixed(0)}',
-                  style: TextStyle(fontSize: 18, color: Colors.green.shade600),
+                  style: TextStyle(fontSize: 16, color: Colors.green.shade600),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // Reduced spacing
             LinearProgressIndicator(
               value: _userProfile!.budgetUsagePercentage,
               backgroundColor: Colors.grey.shade300,
@@ -194,9 +195,10 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
                     : Colors.green,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6), // Reduced spacing
             Text(
               '${(_userProfile!.budgetUsagePercentage * 100).toStringAsFixed(1)}% used',
+              style: const TextStyle(fontSize: 12), // Reduced font size
             ),
           ],
         ),
@@ -213,24 +215,35 @@ class _MoneyTrackerViewState extends State<MoneyTrackerView> {
           children: [
             const Text(
               'Budget Management',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ), // Reduced font size
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // Reduced spacing
             SizedBox(
               width: double.infinity,
+              height: 44, // Reduced height
               child: ElevatedButton.icon(
                 onPressed: _showSetBudgetDialog,
-                icon: const Icon(Icons.edit),
-                label: const Text('Set Total Budget'),
+                icon: const Icon(Icons.edit, size: 18), // Reduced icon size
+                label: const Text(
+                  'Set Total Budget',
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
             ),
             const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
+              height: 44,
               child: OutlinedButton.icon(
                 onPressed: _showBudgetAnalysis,
-                icon: const Icon(Icons.analytics),
-                label: const Text('View Budget Analysis'),
+                icon: const Icon(Icons.analytics, size: 18),
+                label: const Text(
+                  'View Budget Analysis',
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
             ),
           ],

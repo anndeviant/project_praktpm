@@ -62,6 +62,7 @@ class _ProfileViewState extends State<ProfileView> {
       setState(() => _isAsmaulLoading = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +72,7 @@ class _ProfileViewState extends State<ProfileView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: QuestTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         ),
         actions: [
           if (!_isEditing && _userProfile != null)
@@ -93,9 +92,10 @@ class _ProfileViewState extends State<ProfileView> {
             colors: [QuestTheme.backgroundLight, QuestTheme.surfaceColor],
           ),
         ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _userProfile == null
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _userProfile == null
                 ? const Center(child: Text('Error loading profile'))
                 : _buildProfileContent(),
       ),
@@ -282,27 +282,34 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             const Text(
               'Level & XP',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ), // Reduced font size
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // Reduced spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Level ${_userProfile!.level}',
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 20, // Reduced font size
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text('${_userProfile!.xp} XP Total'),
+                Text(
+                  '${_userProfile!.xp} XP Total',
+                  style: const TextStyle(fontSize: 14), // Reduced font size
+                ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6), // Reduced spacing
             LinearProgressIndicator(value: _userProfile!.xpProgress),
             const SizedBox(height: 4),
             Text(
               '${_userProfile!.currentLevelXp}/${_userProfile!.xpForNextLevel} XP to next level',
+              style: const TextStyle(fontSize: 12), // Reduced font size
             ),
           ],
         ),
@@ -319,25 +326,40 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             const Text(
               'Budget Overview',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ), // Reduced font size
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // Reduced spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total Budget'),
-                Text('Rp${_userProfile!.totalBudget.toStringAsFixed(0)}'),
+                const Text('Total Budget', style: TextStyle(fontSize: 14)),
+                Text(
+                  'Rp${_userProfile!.totalBudget.toStringAsFixed(0)}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6), // Reduced spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Used Budget'),
-                Text('Rp${_userProfile!.usedBudget.toStringAsFixed(0)}'),
+                const Text('Used Budget', style: TextStyle(fontSize: 14)),
+                Text(
+                  'Rp${_userProfile!.usedBudget.toStringAsFixed(0)}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 8), // Reduced spacing
             LinearProgressIndicator(value: _userProfile!.budgetUsagePercentage),
           ],
         ),
@@ -516,7 +538,6 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _showChangePasswordDialog() {
-    // TODO: Implement change password functionality
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Change password feature coming soon')),
     );

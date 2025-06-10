@@ -6,47 +6,47 @@ class QuestTheme {
   static const Color primaryPurple = Color(0xFF764ba2);
   static const Color accentGold = Color(0xFFFFD700);
   static const Color accentOrange = Color(0xFFFF6B35);
-  
+
   // Quest Type Colors
   static const Color dailyColor = Color(0xFFFF9500);
   static const Color weeklyColor = Color(0xFF007AFF);
   static const Color monthlyColor = Color(0xFF34C759);
-  
+
   // Status Colors
   static const Color successColor = Color(0xFF34C759);
   static const Color warningColor = Color(0xFFFF9500);
   static const Color errorColor = Color(0xFFFF3B30);
   static const Color expiredColor = Color(0xFFFF3B30);
-  
+
   // Background Colors
   static const Color backgroundLight = Color(0xFFF8F9FA);
   static const Color cardBackground = Colors.white;
   static const Color surfaceColor = Color(0xFFF5F5F7);
-  
+
   // Text Colors
   static const Color textPrimary = Color(0xFF1D1D1F);
   static const Color textSecondary = Color(0xFF86868B);
   static const Color textMuted = Color(0xFFA1A1A6);
-  
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [primaryBlue, primaryPurple],
   );
-  
+
   static const LinearGradient questGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [Color(0xFF4FACFE), Color(0xFF00F2FE)],
   );
-  
+
   static const LinearGradient expGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [accentGold, accentOrange],
   );
-    // Shadow
+  // Shadow
   static List<BoxShadow> cardShadow = [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.1),
@@ -54,7 +54,7 @@ class QuestTheme {
       offset: const Offset(0, 4),
     ),
   ];
-  
+
   static List<BoxShadow> buttonShadow = [
     BoxShadow(
       color: primaryBlue.withValues(alpha: 0.3),
@@ -62,11 +62,23 @@ class QuestTheme {
       offset: const Offset(0, 4),
     ),
   ];
-  
-  // Border Radius
-  static const BorderRadius borderRadius = BorderRadius.all(Radius.circular(16));
-  static const BorderRadius smallBorderRadius = BorderRadius.all(Radius.circular(8));
-  static const BorderRadius largeBorderRadius = BorderRadius.all(Radius.circular(24));
+
+  // Border Radius - Reduced for compact design
+  static const BorderRadius borderRadius = BorderRadius.all(
+    Radius.circular(12),
+  );
+  static const BorderRadius smallBorderRadius = BorderRadius.all(
+    Radius.circular(8),
+  );
+  static const BorderRadius largeBorderRadius = BorderRadius.all(
+    Radius.circular(16),
+  );
+
+  // Compact spacing constants
+  static const double compactPadding = 12.0;
+  static const double compactMargin = 8.0;
+  static const double compactIconSize = 20.0;
+  static const double compactFontSize = 14.0;
 }
 
 class QuestCard extends StatelessWidget {
@@ -92,7 +104,7 @@ class QuestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? const EdgeInsets.only(bottom: 16),
+      margin: margin ?? const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: backgroundColor ?? QuestTheme.cardBackground,
         borderRadius: borderRadius ?? QuestTheme.borderRadius,
@@ -105,7 +117,7 @@ class QuestCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: borderRadius ?? QuestTheme.borderRadius,
           child: Padding(
-            padding: padding ?? const EdgeInsets.all(20),
+            padding: padding ?? const EdgeInsets.all(16),
             child: child,
           ),
         ),
@@ -143,7 +155,7 @@ class QuestButton extends StatelessWidget {
     if (isPrimary) {
       return Container(
         width: width,
-        height: 56,
+        height: 48, // Reduced height for compact
         decoration: BoxDecoration(
           gradient: QuestTheme.primaryGradient,
           borderRadius: QuestTheme.borderRadius,
@@ -157,73 +169,76 @@ class QuestButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: QuestTheme.borderRadius,
             ),
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 24),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
           ),
-          child: isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (icon != null) ...[
-                      Icon(icon, size: 20),
-                      const SizedBox(width: 8),
-                    ],
-                    Text(
-                      text,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+          child:
+              isLoading
+                  ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
-                  ],
-                ),
+                  )
+                  : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (icon != null) ...[
+                        Icon(icon, size: 18), // Reduced icon size
+                        const SizedBox(width: 6),
+                      ],
+                      Text(
+                        text,
+                        style: const TextStyle(
+                          fontSize: 14, // Reduced font size
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
         ),
       );
     }
 
     return SizedBox(
       width: width,
-      height: 56,
+      height: 48, // Reduced height for compact
       child: OutlinedButton(
-        onPressed: isLoading ? null : onPressed,        style: OutlinedButton.styleFrom(
+        onPressed: isLoading ? null : onPressed,
+        style: OutlinedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor ?? QuestTheme.primaryBlue,
-          side: BorderSide(color: QuestTheme.primaryBlue.withValues(alpha: 0.3)),
-          shape: RoundedRectangleBorder(
-            borderRadius: QuestTheme.borderRadius,
+          side: BorderSide(
+            color: QuestTheme.primaryBlue.withValues(alpha: 0.3),
           ),
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24),
+          shape: RoundedRectangleBorder(borderRadius: QuestTheme.borderRadius),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
         ),
-        child: isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+        child:
+            isLoading
+                ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, size: 18),
+                      const SizedBox(width: 6),
+                    ],
+                    Text(
+                      text,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
       ),
     );
   }
@@ -304,7 +319,8 @@ class QuestChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor ?? QuestTheme.surfaceColor,
         borderRadius: QuestTheme.smallBorderRadius,
@@ -316,11 +332,7 @@ class QuestChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(
-                icon,
-                size: 16,
-                color: textColor ?? QuestTheme.textPrimary,
-              ),
+              Icon(icon, size: 16, color: textColor ?? QuestTheme.textPrimary),
               const SizedBox(width: 4),
             ],
             Text(

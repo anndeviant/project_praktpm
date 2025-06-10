@@ -27,22 +27,27 @@ class _NoteDetailViewState extends State<NoteDetailView> {
   Future<void> _deleteNote() async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Note'),
-        content: Text('Are you sure you want to delete "${_note.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Note'),
+            content: Text('Are you sure you want to delete "${_note.title}"?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );    if (confirm == true) {
+    );
+    if (confirm == true) {
       final success = await _noteService.deleteNote(_note.id);
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -50,12 +55,13 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         );
         Navigator.pop(context, true); // Return true to indicate deletion
       } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to delete note')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to delete note')));
       }
     }
   }
+
   Future<void> _togglePin() async {
     final success = await _noteService.togglePinNote(_note.id, !_note.isPinned);
     if (success) {
@@ -76,9 +82,9 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     final text = '${_note.title}\n\n${_note.content}';
     await Clipboard.setData(ClipboardData(text: text));
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Note copied to clipboard')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Note copied to clipboard')));
     }
   }
 
@@ -88,13 +94,16 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     await Clipboard.setData(ClipboardData(text: text));
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Note copied to clipboard (share feature)')),
+        const SnackBar(
+          content: Text('Note copied to clipboard (share feature)'),
+        ),
       );
     }
   }
 
   @override
-  Widget build(BuildContext context) {    return Scaffold(
+  Widget build(BuildContext context) {
+    return Scaffold(
       backgroundColor: QuestTheme.backgroundLight,
       appBar: AppBar(
         title: const Text('Note Details'),
@@ -102,9 +111,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: QuestTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         ),
         actions: [
           IconButton(
@@ -117,7 +124,8 @@ class _NoteDetailViewState extends State<NoteDetailView> {
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
-              switch (value) {                case 'edit':
+              switch (value) {
+                case 'edit':
                   final navigator = Navigator.of(context);
                   Navigator.push(
                     context,
@@ -141,48 +149,49 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                   break;
               }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit),
-                    SizedBox(width: 8),
-                    Text('Edit'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'copy',
-                child: Row(
-                  children: [
-                    Icon(Icons.copy),
-                    SizedBox(width: 8),
-                    Text('Copy'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'share',
-                child: Row(
-                  children: [
-                    Icon(Icons.share),
-                    SizedBox(width: 8),
-                    Text('Share'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Delete', style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(
+                    value: 'edit',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 8),
+                        Text('Edit'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'copy',
+                    child: Row(
+                      children: [
+                        Icon(Icons.copy),
+                        SizedBox(width: 8),
+                        Text('Copy'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'share',
+                    child: Row(
+                      children: [
+                        Icon(Icons.share),
+                        SizedBox(width: 8),
+                        Text('Share'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Delete', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
       ),
@@ -191,30 +200,33 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
+            // Title - more compact
             Text(
               _note.title,
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 20, // Reduced font size
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-
-            // Metadata row
+            const SizedBox(height: 12), // Reduced spacing
+            // Metadata row - more compact
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ), // Reduced padding
                   decoration: BoxDecoration(
                     color: Colors.blue.shade100,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8), // Reduced radius
                   ),
                   child: Text(
                     _note.category,
                     style: TextStyle(
                       color: Colors.blue.shade700,
                       fontWeight: FontWeight.w500,
+                      fontSize: 12, // Reduced font size
                     ),
                   ),
                 ),
@@ -226,7 +238,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                       'Created: ${_note.formattedDate}',
                       style: TextStyle(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: 11, // Reduced font size
                       ),
                     ),
                     if (_note.createdAt != _note.updatedAt)
@@ -234,26 +246,27 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                         'Updated: ${_note.updatedAt.day}/${_note.updatedAt.month}/${_note.updatedAt.year}',
                         style: TextStyle(
                           color: Colors.grey.shade600,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                   ],
                 ),
               ],
-            ),            const SizedBox(height: 16),
+            ),
 
-            // Content
+            const SizedBox(height: 12), // Reduced spacing
+            // Content section - more compact
             const Text(
               'Content',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14, // Reduced font size
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6), // Reduced spacing
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12), // Reduced padding
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
@@ -262,39 +275,49 @@ class _NoteDetailViewState extends State<NoteDetailView> {
               child: Text(
                 _note.content,
                 style: const TextStyle(
-                  fontSize: 16,
-                  height: 1.5,
+                  fontSize: 14, // Reduced font size
+                  height: 1.4, // Reduced line height
                 ),
               ),
             ),
-            const SizedBox(height: 24),
 
-            // Quick actions
+            const SizedBox(height: 20), // Reduced spacing
+            // Quick actions - more compact
             Row(
               children: [
-                Expanded(                  child: OutlinedButton.icon(
+                Expanded(
+                  child: OutlinedButton.icon(
                     onPressed: () {
                       final navigator = Navigator.of(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => NoteEditorView(note: _note),                        ),
+                          builder: (context) => NoteEditorView(note: _note),
+                        ),
                       ).then((updated) {
                         if (updated == true && mounted) {
                           navigator.pop(true);
                         }
                       });
                     },
-                    icon: const Icon(Icons.edit),
-                    label: const Text('Edit'),
+                    icon: const Icon(Icons.edit, size: 18), // Reduced icon size
+                    label: const Text('Edit', style: TextStyle(fontSize: 14)),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                      ), // Compact padding
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: _copyToClipboard,
-                    icon: const Icon(Icons.copy),
-                    label: const Text('Copy'),
+                    icon: const Icon(Icons.copy, size: 18),
+                    label: const Text('Copy', style: TextStyle(fontSize: 14)),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
                   ),
                 ),
               ],

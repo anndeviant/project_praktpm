@@ -71,17 +71,16 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: QuestTheme.primaryGradient,
-        ),
+        decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -91,122 +90,156 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: size.height * 0.1),
-                    
-                    // Hero Section
+                    SizedBox(height: size.height * 0.08), // Reduced height
+                    // Hero Section - more compact
                     FadeInDown(
                       duration: const Duration(milliseconds: 800),
                       child: Container(
-                        width: 120,
-                        height: 120,
+                        width: 100, // Reduced size
+                        height: 100,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             width: 2,
                           ),
                         ),
                         child: Icon(
                           Icons.assignment_outlined,
-                          size: 60,
+                          size: 50, // Reduced icon size
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
+
+                    const SizedBox(height: 24), // Reduced spacing
+
                     FadeInDown(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 200),
                       child: Text(
                         'KKN Quest',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 28, // Reduced font size
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1.2,
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 8),
-                    
+
+                    const SizedBox(height: 6), // Reduced spacing
+
                     FadeInDown(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 400),
                       child: Text(
                         'Masuk untuk memulai petualangan KKN Anda',
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14, // Reduced font size
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    
-                    const SizedBox(height: 48),
-                    
-                    // Login Form Card
+
+                    const SizedBox(height: 40), // Reduced spacing
+                    // Login Form Card - more compact
                     FadeInUp(
                       duration: const Duration(milliseconds: 800),
                       delay: const Duration(milliseconds: 600),
                       child: Container(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(20), // Reduced padding
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(
+                            16,
+                          ), // Reduced radius
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 15, // Reduced blur
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
                         child: Column(
                           children: [
-                            // Error Message
+                            // Error Message - more compact
                             if (_errorMessage != null)
                               Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(
+                                  bottom: 12,
+                                ), // Reduced margin
+                                padding: const EdgeInsets.all(
+                                  10,
+                                ), // Reduced padding
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,
-                                  border: Border.all(color: Colors.red.shade200),
-                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.red.shade200,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ), // Reduced radius
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.error_outline, color: Colors.red),
-                                    const SizedBox(width: 12),
+                                    Icon(
+                                      Icons.error_outline,
+                                      color: Colors.red,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         _errorMessage!,
-                                        style: TextStyle(color: Colors.red.shade700),
+                                        style: TextStyle(
+                                          color: Colors.red.shade700,
+                                          fontSize: 13, // Reduced font size
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            
-                            // Email Field
+
+                            // Email Field - compact styling
                             TextFormField(
                               controller: _emailController,
                               decoration: InputDecoration(
                                 labelText: 'Email',
-                                prefixIcon: Icon(Icons.email_outlined, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(
+                                  fontSize: 14,
+                                ), // Reduced font size
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: const Color(0xFF667eea),
+                                  size: 20, // Reduced icon size
+                                ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(
+                                    10,
+                                  ), // Reduced radius
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12, // Compact padding
+                                ),
                               ),
+                              style: TextStyle(
+                                fontSize: 14,
+                              ), // Reduced font size
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -220,20 +253,27 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                                 return null;
                               },
                             ),
-                            
-                            const SizedBox(height: 20),
-                            
-                            // Password Field
+
+                            const SizedBox(height: 16), // Reduced spacing
+                            // Password Field - compact styling
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               decoration: InputDecoration(
                                 labelText: 'Password',
-                                prefixIcon: Icon(Icons.lock_outlined, color: const Color(0xFF667eea)),
+                                labelStyle: TextStyle(fontSize: 14),
+                                prefixIcon: Icon(
+                                  Icons.lock_outlined,
+                                  color: const Color(0xFF667eea),
+                                  size: 20,
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                     color: Colors.grey,
+                                    size: 20,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -242,15 +282,23 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                                   },
                                 ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: const Color(0xFF667eea), width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xFF667eea),
+                                    width: 2,
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                               ),
+                              style: TextStyle(fontSize: 14),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Password harus diisi';
@@ -258,77 +306,87 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                                 return null;
                               },
                             ),
-                            
-                            const SizedBox(height: 24),
-                            
-                            // Login Button
+
+                            const SizedBox(height: 20), // Reduced spacing
+                            // Login Button - more compact
                             SizedBox(
                               width: double.infinity,
-                              height: 56,
-                              child: _isLoading
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFF667eea),
-                                            const Color(0xFF764ba2),
+                              height: 48, // Reduced height
+                              child:
+                                  _isLoading
+                                      ? Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF667eea),
+                                              const Color(0xFF764ba2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        ),
+                                      )
+                                      : Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF667eea),
+                                              const Color(0xFF764ba2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(
+                                                0xFF667eea,
+                                              ).withValues(alpha: 0.3),
+                                              blurRadius: 6, // Reduced blur
+                                              offset: const Offset(0, 3),
+                                            ),
                                           ],
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFF667eea),
-                                            const Color(0xFF764ba2),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFF667eea).withOpacity(0.3),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 4),
+                                        child: ElevatedButton(
+                                          onPressed: _login,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: _login,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Masuk Quest',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
+                                          child: const Text(
+                                            'Masuk Quest',
+                                            style: TextStyle(
+                                              fontSize: 16, // Reduced font size
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
                             ),
-                            
-                            const SizedBox(height: 20),
-                            
-                            // Forgot Password
+
+                            const SizedBox(height: 16), // Reduced spacing
+                            // Forgot Password - compact styling
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const ForgotPasswordView(),
+                                    builder:
+                                        (context) => const ForgotPasswordView(),
                                   ),
                                 );
                               },
@@ -337,6 +395,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                                 style: TextStyle(
                                   color: const Color(0xFF667eea),
                                   fontWeight: FontWeight.w500,
+                                  fontSize: 14, // Reduced font size
                                 ),
                               ),
                             ),
@@ -344,10 +403,9 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Register Link
+
+                    const SizedBox(height: 24), // Reduced spacing
+                    // Register Link - more compact
                     FadeInUp(
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 800),
@@ -357,14 +415,17 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                           Text(
                             'Belum punya akun? ',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontSize: 13, // Reduced font size
                             ),
                           ),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const RegisterView()),
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterView(),
+                                ),
                               );
                             },
                             child: Text(
@@ -373,14 +434,15 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
+                                fontSize: 13, // Reduced font size
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
-                    const SizedBox(height: 32),
+
+                    const SizedBox(height: 24), // Reduced spacing
                   ],
                 ),
               ),

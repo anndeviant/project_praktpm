@@ -28,7 +28,8 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
-      bottomNavigationBar: Container(        decoration: const BoxDecoration(
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
           gradient: QuestTheme.primaryGradient,
           boxShadow: [
             BoxShadow(
@@ -87,53 +88,48 @@ class _MainNavigationState extends State<MainNavigation> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFF667eea),
-                const Color(0xFF764ba2),
-              ],
+              colors: [const Color(0xFF667eea), const Color(0xFF764ba2)],
             ),
           ),
         ),
         foregroundColor: Colors.white,
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 8),
+            margin: const EdgeInsets.only(right: 6),
             child: IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NotesView()),
-              ),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NotesView()),
+                  ),
               icon: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Icon(
-                  Icons.note_alt_outlined,
-                  size: 20,
-                ),
+                child: const Icon(Icons.note_alt_outlined, size: 18),
               ),
               tooltip: 'Catatan',
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(right: 16),
+            margin: const EdgeInsets.only(right: 12),
             child: IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileView()),
-              ),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileView(),
+                    ),
+                  ),
               icon: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Icon(
-                  Icons.person_outline,
-                  size: 20,
-                ),
+                child: const Icon(Icons.person_outline, size: 18),
               ),
               tooltip: 'Profil',
             ),

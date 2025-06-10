@@ -66,7 +66,7 @@ class _NoteEditorViewState extends State<NoteEditorView> {
       }
 
       final now = DateTime.now();
-      
+
       if (widget.note == null) {
         // Create new note
         final newNote = Note(
@@ -115,9 +115,9 @@ class _NoteEditorViewState extends State<NoteEditorView> {
     } catch (e) {
       _logger.e('Error saving note: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     } finally {
       setState(() => _isLoading = false);
@@ -134,16 +134,11 @@ class _NoteEditorViewState extends State<NoteEditorView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: QuestTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         ),
         actions: [
           if (!_isLoading)
-            IconButton(
-              onPressed: _saveNote,
-              icon: const Icon(Icons.save),
-            ),
+            IconButton(onPressed: _saveNote, icon: const Icon(Icons.save)),
           if (_isLoading)
             const Padding(
               padding: EdgeInsets.all(16.0),
@@ -189,17 +184,18 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                       Text(
                         widget.note == null ? 'Create New Note' : 'Edit Note',
                         style: const TextStyle(
-                          fontSize: 24,
+                          fontSize: 20, // Reduced font size
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
+                      const SizedBox(height: 4), // Reduced spacing
                       Text(
-                        widget.note == null 
-                            ? 'Capture your thoughts and ideas' 
+                        widget.note == null
+                            ? 'Capture your thoughts and ideas'
                             : 'Update your note content',
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 13, // Reduced font size
                           color: Colors.white70,
                         ),
                         textAlign: TextAlign.center,
@@ -208,7 +204,7 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Form Card
                 Container(
                   padding: const EdgeInsets.all(20),
@@ -241,7 +237,7 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                         textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Category Field
                       DropdownButtonFormField<String>(
                         value: _selectedCategory,
@@ -259,16 +255,17 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                           filled: true,
                           fillColor: QuestTheme.surfaceColor,
                         ),
-                        items: _predefinedCategories.map((category) {
-                          return DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          );
-                        }).toList(),
+                        items:
+                            _predefinedCategories.map((category) {
+                              return DropdownMenuItem(
+                                value: category,
+                                child: Text(category),
+                              );
+                            }).toList(),
                       ),
                       const SizedBox(height: 16),
-                      
-                      // Content Field  
+
+                      // Content Field
                       TextFormField(
                         controller: _contentController,
                         decoration: InputDecoration(
@@ -290,7 +287,7 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                         },
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // Save Button
                       SizedBox(
                         width: double.infinity,
@@ -304,16 +301,19 @@ class _NoteEditorViewState extends State<NoteEditorView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          icon: _isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2, 
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
-                                  ),
-                                )
-                              : const Icon(Icons.save),
+                          icon:
+                              _isLoading
+                                  ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                  : const Icon(Icons.save),
                           label: Text(
                             widget.note == null ? 'Create Note' : 'Update Note',
                             style: const TextStyle(

@@ -38,7 +38,9 @@ class _QuestHomeViewState extends State<QuestHomeView> {
     super.initState();
     _loadData();
     _startDeadlineCheckTimer();
-  }  void _startDeadlineCheckTimer() {
+  }
+
+  void _startDeadlineCheckTimer() {
     // Check for upcoming deadlines every 15 minutes (reduced from 5 minutes)
     // This ensures notifications work even when scheduled notifications fail
     _deadlineCheckTimer = Timer.periodic(const Duration(minutes: 15), (timer) {
@@ -47,6 +49,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       }
     });
   }
+
   Future<void> _loadData() async {
     try {
       final userProfile = await _authService.getUserProfile();
@@ -65,16 +68,17 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         _monthlyQuests = await _questService.getQuestsByType(
           kodeKkn,
           QuestType.monthly,
-        );        
+        );
         // Schedule notifications for all active quests with deadlines
         await _questService.scheduleAllQuestNotifications(kodeKkn);
-        
+
         // Check for immediate deadline notifications (smart check to prevent spam)
         await _questService.checkUpcomingDeadlinesWithSmartNotification();
       }
 
       // Load prayer schedule
-      await _loadPrayerSchedule();} catch (e) {
+      await _loadPrayerSchedule();
+    } catch (e) {
       _logger.e('Error loading data: $e');
     } finally {
       // Cek apakah widget masih mounted sebelum memanggil setState
@@ -83,6 +87,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       }
     }
   }
+
   Future<void> _loadPrayerSchedule() async {
     try {
       _selectedCityName = await _prayerService.getSelectedCityName();
@@ -91,6 +96,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       _logger.e('Error loading prayer schedule: $e');
     }
   }
+
   @override
   void dispose() {
     // Cancel timer
@@ -99,13 +105,12 @@ class _QuestHomeViewState extends State<QuestHomeView> {
     _disposed = true;
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Container(
-        decoration: const BoxDecoration(
-          gradient: QuestTheme.primaryGradient,
-        ),
+        decoration: const BoxDecoration(gradient: QuestTheme.primaryGradient),
         child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -132,10 +137,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       return const Center(
         child: Text(
           'Error loading user data',
-          style: TextStyle(
-            fontSize: 16,
-            color: QuestTheme.errorColor,
-          ),
+          style: TextStyle(fontSize: 16, color: QuestTheme.errorColor),
         ),
       );
     }
@@ -145,10 +147,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            QuestTheme.primaryBlue,
-            QuestTheme.backgroundLight,
-          ],
+          colors: [QuestTheme.primaryBlue, QuestTheme.backgroundLight],
           stops: [0.0, 0.3],
         ),
       ),
@@ -176,54 +175,96 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       ),
     );
   }
+
   Widget _buildPrayerScheduleCard() {
     return QuestCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header row - simplified to prevent overflow
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: QuestTheme.successColor.withOpacity(0.1),
-                      borderRadius: QuestTheme.smallBorderRadius,
-                    ),
-                    child: Icon(
-                      Icons.mosque,
-                      color: QuestTheme.successColor,
-                      size: 20,
-                    ),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: QuestTheme.successColor.withValues(alpha: 0.1),
+                  borderRadius: QuestTheme.smallBorderRadius,
+                ),
+                child: Icon(
+                  Icons.mosque,
+                  color: QuestTheme.successColor,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Jadwal Sholat',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: QuestTheme.textPrimary,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: _showCitySearchDialog,
+                icon: const Icon(Icons.location_on, size: 20),
+                style: IconButton.styleFrom(
+                  backgroundColor: QuestTheme.primaryBlue.withValues(
+                    alpha: 0.1,
                   ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Jadwal Sholat',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: QuestTheme.textPrimary,
+                  foregroundColor: QuestTheme.primaryBlue,
+                  padding: const EdgeInsets.all(8),
+                ),
+                tooltip: 'Pilih Kota',
+              ),
+            ],
+          ),
+
+          // City name display below header
+          if (_selectedCityName != null) ...[
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: QuestTheme.primaryBlue.withValues(alpha: 0.1),
+                borderRadius: QuestTheme.smallBorderRadius,
+                border: Border.all(
+                  color: QuestTheme.primaryBlue.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.location_city,
+                    size: 14,
+                    color: QuestTheme.primaryBlue,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      _selectedCityName!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: QuestTheme.primaryBlue,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              QuestButton(
-                text: _selectedCityName ?? 'Pilih Kota',
-                onPressed: _showCitySearchDialog,
-                isPrimary: false,
-                icon: Icons.location_on,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
+            ),
+          ],
+
+          const SizedBox(height: 16),
           if (_prayerSchedule != null) ...[
             if (_prayerSchedule!.tanggal.isNotEmpty)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
                   color: QuestTheme.surfaceColor,
                   borderRadius: QuestTheme.smallBorderRadius,
@@ -231,7 +272,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                 child: Text(
                   _prayerSchedule!.tanggal,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: QuestTheme.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
@@ -239,36 +280,66 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                 ),
               ),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    QuestTheme.successColor.withOpacity(0.1),
-                    QuestTheme.successColor.withOpacity(0.05),
+                    QuestTheme.successColor.withValues(alpha: 0.1),
+                    QuestTheme.successColor.withValues(alpha: 0.05),
                   ],
                 ),
                 borderRadius: QuestTheme.borderRadius,
                 border: Border.all(
-                  color: QuestTheme.successColor.withOpacity(0.2),
+                  color: QuestTheme.successColor.withValues(alpha: 0.2),
                 ),
               ),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Expanded(child: _buildPrayerTimeItem('Imsak', _prayerSchedule!.imsak)),
-                      Expanded(child: _buildPrayerTimeItem('Subuh', _prayerSchedule!.subuh)),
-                      Expanded(child: _buildPrayerTimeItem('Dzuhur', _prayerSchedule!.dzuhur)),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Imsak',
+                          _prayerSchedule!.imsak,
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Subuh',
+                          _prayerSchedule!.subuh,
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Dzuhur',
+                          _prayerSchedule!.dzuhur,
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
-                      Expanded(child: _buildPrayerTimeItem('Ashar', _prayerSchedule!.ashar)),
-                      Expanded(child: _buildPrayerTimeItem('Maghrib', _prayerSchedule!.maghrib)),
-                      Expanded(child: _buildPrayerTimeItem('Isya', _prayerSchedule!.isya)),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Ashar',
+                          _prayerSchedule!.ashar,
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Maghrib',
+                          _prayerSchedule!.maghrib,
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildPrayerTimeItem(
+                          'Isya',
+                          _prayerSchedule!.isya,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -277,7 +348,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
           ] else ...[
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: QuestTheme.surfaceColor,
                 borderRadius: QuestTheme.borderRadius,
@@ -286,16 +357,16 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                 children: [
                   Icon(
                     Icons.location_off,
-                    size: 48,
+                    size: 40,
                     color: QuestTheme.textMuted,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Text(
                     _selectedCityName == null
                         ? 'Pilih kota untuk melihat jadwal sholat'
                         : 'Gagal memuat jadwal sholat',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: QuestTheme.textSecondary,
                     ),
                     textAlign: TextAlign.center,
@@ -315,19 +386,21 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         Text(
           name,
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: 10, // Further reduced font size
             color: QuestTheme.textSecondary,
             fontWeight: FontWeight.w500,
           ),
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           time,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 11, // Further reduced font size
             fontWeight: FontWeight.bold,
             color: QuestTheme.successColor,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -338,7 +411,8 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       context: context,
       builder:
           (context) => _CitySearchDialog(
-            prayerService: _prayerService,            onCitySelected: (cityId, cityName) async {
+            prayerService: _prayerService,
+            onCitySelected: (cityId, cityName) async {
               await _prayerService.saveSelectedCity(cityId, cityName);
               await _loadPrayerSchedule();
               // Cek apakah widget masih mounted sebelum memanggil setState
@@ -352,7 +426,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
 
   Widget _buildWelcomeHeader() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: QuestTheme.largeBorderRadius,
@@ -364,7 +438,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12), // Reduced padding
                 decoration: BoxDecoration(
                   gradient: QuestTheme.primaryGradient,
                   shape: BoxShape.circle,
@@ -372,10 +446,10 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                 child: Icon(
                   Icons.waving_hand,
                   color: Colors.white,
-                  size: 28,
-                ),
+                  size: 24,
+                ), // Reduced icon size
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12), // Reduced spacing
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,7 +457,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                     Text(
                       'Selamat Datang!',
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14, // Reduced font size
                         color: QuestTheme.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -391,19 +465,21 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                     Text(
                       _userProfile!.namaLengkap,
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18, // Reduced font size
                         fontWeight: FontWeight.bold,
                         color: QuestTheme.textPrimary,
                       ),
+                      overflow: TextOverflow.ellipsis, // Prevent overflow
+                      maxLines: 1,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12), // Reduced spacing
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12), // Reduced padding
             decoration: BoxDecoration(
               gradient: QuestTheme.questGradient,
               borderRadius: QuestTheme.borderRadius,
@@ -413,9 +489,9 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                 Icon(
                   Icons.school,
                   color: Colors.white,
-                  size: 24,
-                ),
-                const SizedBox(width: 12),
+                  size: 20,
+                ), // Reduced icon size
+                const SizedBox(width: 10), // Reduced spacing
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,7 +500,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                         'KKN Quest ID',
                         style: const TextStyle(
                           color: Colors.white70,
-                          fontSize: 12,
+                          fontSize: 11, // Reduced font size
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -432,7 +508,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                         _userProfile!.kodeKkn,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 14, // Reduced font size
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -464,17 +540,29 @@ class _QuestHomeViewState extends State<QuestHomeView> {
           const Text(
             'Quest Progress Overview',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18, // Reduced font size
               fontWeight: FontWeight.bold,
               color: QuestTheme.textPrimary,
             ),
           ),
-          const SizedBox(height: 20),
-          _buildProgressRow('Daily Quests', _dailyQuests, QuestTheme.dailyColor),
-          const SizedBox(height: 16),
-          _buildProgressRow('Weekly Quests', _weeklyQuests, QuestTheme.weeklyColor),
-          const SizedBox(height: 16),
-          _buildProgressRow('Monthly Quests', _monthlyQuests, QuestTheme.monthlyColor),
+          const SizedBox(height: 16), // Reduced spacing
+          _buildProgressRow(
+            'Daily Quests',
+            _dailyQuests,
+            QuestTheme.dailyColor,
+          ),
+          const SizedBox(height: 12), // Reduced spacing
+          _buildProgressRow(
+            'Weekly Quests',
+            _weeklyQuests,
+            QuestTheme.weeklyColor,
+          ),
+          const SizedBox(height: 12),
+          _buildProgressRow(
+            'Monthly Quests',
+            _monthlyQuests,
+            QuestTheme.monthlyColor,
+          ),
         ],
       ),
     );
@@ -491,82 +579,95 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
+            Expanded(
+              // Wrap in Expanded to prevent overflow
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(4), // Reduced padding
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4), // Reduced radius
+                    ),
+                    child: Icon(
+                      QuestTypeHelper.getQuestTypeIcon(
+                        title.split(' ')[0].toLowerCase(),
+                      ),
+                      color: color,
+                      size: 14, // Reduced icon size
+                    ),
                   ),
-                  child: Icon(
-                    QuestTypeHelper.getQuestTypeIcon(title.split(' ')[0].toLowerCase()),
-                    color: color,
-                    size: 16,
+                  const SizedBox(width: 6), // Reduced spacing
+                  Flexible(
+                    // Use Flexible to prevent overflow
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13, // Reduced font size
+                        fontWeight: FontWeight.w600,
+                        color: QuestTheme.textPrimary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: QuestTheme.textPrimary,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
             Text(
               '$completed/$total',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13, // Reduced font size
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6), // Reduced spacing
         QuestProgressIndicator(
           progress: progress,
           valueColor: color,
-        ),
+          height: 6,
+        ), // Thinner progress bar
       ],
     );
   }
+
   Widget _buildQuickStats() {
-    int totalCompleted = _dailyQuests.where((q) => q.isCompleted).length +
+    int totalCompleted =
+        _dailyQuests.where((q) => q.isCompleted).length +
         _weeklyQuests.where((q) => q.isCompleted).length +
         _monthlyQuests.where((q) => q.isCompleted).length;
-    
-    int totalQuests = _dailyQuests.length + _weeklyQuests.length + _monthlyQuests.length;
-    
+
+    int totalQuests =
+        _dailyQuests.length + _weeklyQuests.length + _monthlyQuests.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Quest Statistics',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 18, // Reduced font size
             fontWeight: FontWeight.bold,
             color: QuestTheme.textPrimary,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12), // Reduced spacing
         Row(
           children: [
             Expanded(
-              child: QuestStatsCard(
+              child: _buildCompactStatsCard(
                 title: 'Completed',
                 value: totalCompleted.toString(),
                 icon: Icons.check_circle,
                 color: QuestTheme.successColor,
-                subtitle: 'Total quests done',
+                subtitle: 'Total done',
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12), // Reduced spacing
             Expanded(
-              child: QuestStatsCard(
+              child: _buildCompactStatsCard(
                 title: 'Active',
                 value: (totalQuests - totalCompleted).toString(),
                 icon: Icons.pending_actions,
@@ -576,26 +677,27 @@ class _QuestHomeViewState extends State<QuestHomeView> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
-              child: QuestStatsCard(
+              child: _buildCompactStatsCard(
                 title: 'Total XP',
                 value: _userProfile!.xp.toString(),
                 icon: Icons.stars,
                 color: QuestTheme.accentGold,
-                subtitle: 'Experience points',
+                subtitle: 'Experience',
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
-              child: QuestStatsCard(
+              child: _buildCompactStatsCard(
                 title: 'Budget Used',
-                value: 'Rp${_userProfile!.usedBudget.toStringAsFixed(0)}',
+                value:
+                    'Rp${(_userProfile!.usedBudget / 1000).toStringAsFixed(0)}K', // Shortened format
                 icon: Icons.account_balance_wallet,
                 color: QuestTheme.accentOrange,
-                subtitle: 'From total budget',
+                subtitle: 'From budget',
               ),
             ),
           ],
@@ -603,6 +705,74 @@ class _QuestHomeViewState extends State<QuestHomeView> {
       ],
     );
   }
+
+  // New compact stats card widget to prevent overflow
+  Widget _buildCompactStatsCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12), // Compact padding
+      decoration: BoxDecoration(
+        color: QuestTheme.cardBackground,
+        borderRadius: QuestTheme.borderRadius,
+        boxShadow: QuestTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8), // Reduced padding
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: QuestTheme.smallBorderRadius,
+                ),
+                child: Icon(icon, color: color, size: 20), // Reduced icon size
+              ),
+              const Spacer(),
+            ],
+          ),
+          const SizedBox(height: 8), // Reduced spacing
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20, // Reduced font size
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12, // Reduced font size
+              color: QuestTheme.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          Text(
+            subtitle,
+            style: const TextStyle(
+              fontSize: 10, // Reduced font size
+              color: QuestTheme.textMuted,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRecentQuests() {
     List<Quest> allQuests = [
       ..._dailyQuests,
@@ -621,7 +791,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
             const Text(
               'Recent Quests',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 18, // Reduced font size
                 fontWeight: FontWeight.bold,
                 color: QuestTheme.textPrimary,
               ),
@@ -630,34 +800,37 @@ class _QuestHomeViewState extends State<QuestHomeView> {
               onPressed: () {
                 // Navigate to quest list
               },
-              child: const Text('View All'),
+              child: const Text(
+                'View All',
+                style: TextStyle(fontSize: 13),
+              ), // Reduced font size
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12), // Reduced spacing
         if (recentQuests.isEmpty)
           QuestCard(
             child: Column(
               children: [
                 Icon(
                   Icons.assignment_outlined,
-                  size: 64,
+                  size: 48,
                   color: QuestTheme.textMuted,
-                ),
-                const SizedBox(height: 16),
+                ), // Reduced icon size
+                const SizedBox(height: 12),
                 Text(
                   'No quests yet',
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14, // Reduced font size
                     fontWeight: FontWeight.w500,
                     color: QuestTheme.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   'Create your first quest to get started!',
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 12, // Reduced font size
                     color: QuestTheme.textMuted,
                   ),
                   textAlign: TextAlign.center,
@@ -668,29 +841,36 @@ class _QuestHomeViewState extends State<QuestHomeView> {
         else
           ...recentQuests.map(
             (quest) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 12), // Reduced spacing
               child: QuestCard(
+                padding: const EdgeInsets.all(12), // Reduced padding
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(8), // Reduced padding
                       decoration: BoxDecoration(
-                        color: quest.isCompleted
-                            ? QuestTheme.successColor.withOpacity(0.1)
-                            : QuestTypeHelper.getQuestTypeColor(quest.type.name).withOpacity(0.1),
+                        color:
+                            quest.isCompleted
+                                ? QuestTheme.successColor.withValues(alpha: 0.1)
+                                : QuestTypeHelper.getQuestTypeColor(
+                                  quest.type.name,
+                                ).withValues(alpha: 0.1),
                         borderRadius: QuestTheme.smallBorderRadius,
                       ),
                       child: Icon(
                         quest.isCompleted
                             ? Icons.check_circle
                             : QuestTypeHelper.getQuestTypeIcon(quest.type.name),
-                        color: quest.isCompleted
-                            ? QuestTheme.successColor
-                            : QuestTypeHelper.getQuestTypeColor(quest.type.name),
-                        size: 24,
+                        color:
+                            quest.isCompleted
+                                ? QuestTheme.successColor
+                                : QuestTypeHelper.getQuestTypeColor(
+                                  quest.type.name,
+                                ),
+                        size: 20, // Reduced icon size
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -698,27 +878,35 @@ class _QuestHomeViewState extends State<QuestHomeView> {
                           Text(
                             quest.title,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14, // Reduced font size
                               fontWeight: FontWeight.w600,
                               color: QuestTheme.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           Row(
                             children: [
                               QuestChip(
                                 label: quest.type.name.toUpperCase(),
-                                backgroundColor: QuestTypeHelper.getQuestTypeColor(quest.type.name).withOpacity(0.1),
-                                textColor: QuestTypeHelper.getQuestTypeColor(quest.type.name),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                backgroundColor:
+                                    QuestTypeHelper.getQuestTypeColor(
+                                      quest.type.name,
+                                    ).withValues(alpha: 0.1),
+                                textColor: QuestTypeHelper.getQuestTypeColor(
+                                  quest.type.name,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ), // Reduced padding
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 6),
                               Text(
                                 '${quest.xpReward} XP',
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 11, // Reduced font size
                                   color: QuestTheme.textSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -740,48 +928,71 @@ class _QuestHomeViewState extends State<QuestHomeView> {
   Widget _buildNotificationTestCard() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0), // Reduced padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Row(
               children: [
-                Icon(Icons.notifications, color: Colors.blue),
-                SizedBox(width: 8),
+                Icon(
+                  Icons.notifications,
+                  color: Colors.blue,
+                  size: 20,
+                ), // Reduced icon size
+                SizedBox(width: 6),
                 Text(
                   'Reminder Notification',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ), // Reduced font size
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             const Text(
               'Sistem akan mengirim reminder 15 menit sebelum deadline quest',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ), // Reduced font size
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: _testNotification,
-                    icon: const Icon(Icons.notification_add),
-                    label: const Text('Test Notification'),
+                    icon: const Icon(
+                      Icons.notification_add,
+                      size: 16,
+                    ), // Reduced icon size
+                    label: const Text(
+                      'Test Notification',
+                      style: TextStyle(fontSize: 12),
+                    ), // Reduced font size
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ), // Reduced padding
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: _checkNotificationPermission,
-                    icon: const Icon(Icons.settings),
-                    label: const Text('Check Permission'),
+                    icon: const Icon(Icons.settings, size: 16),
+                    label: const Text(
+                      'Check Permission',
+                      style: TextStyle(fontSize: 12),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   ),
                 ),
@@ -797,7 +1008,7 @@ class _QuestHomeViewState extends State<QuestHomeView> {
     try {
       final NotificationService notificationService = NotificationService();
       await notificationService.showTestNotification();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -821,60 +1032,65 @@ class _QuestHomeViewState extends State<QuestHomeView> {
 
   Future<void> _checkNotificationPermission() async {
     try {
-      final bool hasPermission = await NotificationHelper.areNotificationsEnabled();
-      final int pendingCount = await NotificationService().getPendingNotificationsCount();
-      
+      final bool hasPermission =
+          await NotificationHelper.areNotificationsEnabled();
+      final int pendingCount =
+          await NotificationService().getPendingNotificationsCount();
+
       if (mounted) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Status Notifikasi'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Status Notifikasi'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      hasPermission ? Icons.check_circle : Icons.cancel,
-                      color: hasPermission ? Colors.green : Colors.red,
+                    Row(
+                      children: [
+                        Icon(
+                          hasPermission ? Icons.check_circle : Icons.cancel,
+                          color: hasPermission ? Colors.green : Colors.red,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          hasPermission
+                              ? 'Permission Diizinkan'
+                              : 'Permission Ditolak',
+                          style: TextStyle(
+                            color: hasPermission ? Colors.green : Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      hasPermission ? 'Permission Diizinkan' : 'Permission Ditolak',
-                      style: TextStyle(
-                        color: hasPermission ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8),
+                    Text('Pending notifications: $pendingCount'),
+                    if (!hasPermission) ...[
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Aktifkan notifikasi di pengaturan untuk mendapat reminder quest.',
+                        style: TextStyle(color: Colors.orange),
                       ),
-                    ),
+                    ],
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text('Pending notifications: $pendingCount'),
-                if (!hasPermission) ...[
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Aktifkan notifikasi di pengaturan untuk mendapat reminder quest.',
-                    style: TextStyle(color: Colors.orange),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
                   ),
+                  if (!hasPermission)
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        NotificationHelper.requestPermission(context);
+                      },
+                      child: const Text('Request Permission'),
+                    ),
                 ],
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
               ),
-              if (!hasPermission)
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    NotificationHelper.requestPermission(context);
-                  },
-                  child: const Text('Request Permission'),
-                ),
-            ],
-          ),
         );
       }
     } catch (e) {
@@ -918,56 +1134,326 @@ class _CitySearchDialogState extends State<_CitySearchDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Cari Kota'),
-      content: SizedBox(
-        width: double.maxFinite,
+    final screenHeight = MediaQuery.of(context).size.height;
+    final maxDialogHeight = screenHeight * 0.7; // 70% of screen height
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ), // Reduced radius
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: 350, // Reduced width
+          maxHeight: maxDialogHeight, // Dynamic height based on screen
+        ),
+        padding: const EdgeInsets.all(16), // Reduced padding
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Masukkan nama kota...',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: _searchCity,
+            // Header - more compact
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6), // Reduced padding
+                  decoration: BoxDecoration(
+                    color: QuestTheme.primaryBlue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6), // Reduced radius
+                  ),
+                  child: Icon(
+                    Icons.search,
+                    color: QuestTheme.primaryBlue,
+                    size: 18, // Reduced icon size
+                  ),
                 ),
-              ),
-              onSubmitted: (_) => _searchCity(),
+                const SizedBox(width: 8), // Reduced spacing
+                const Expanded(
+                  child: Text(
+                    'Cari Kota',
+                    style: TextStyle(
+                      fontSize: 16, // Reduced font size
+                      fontWeight: FontWeight.bold,
+                      color: QuestTheme.textPrimary,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, size: 18), // Reduced icon size
+                  style: IconButton.styleFrom(
+                    backgroundColor: QuestTheme.surfaceColor,
+                    padding: const EdgeInsets.all(6), // Reduced padding
+                    minimumSize: const Size(32, 32), // Smaller button
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            if (_isLoading) ...[
-              const CircularProgressIndicator(),
-            ] else if (_searchResults.isNotEmpty) ...[
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  itemCount: _searchResults.length,
-                  itemBuilder: (context, index) {
-                    final city = _searchResults[index];
-                    return ListTile(
-                      title: Text(city.lokasi),
-                      onTap: () {
-                        widget.onCitySelected(city.id, city.lokasi);
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
+
+            const SizedBox(height: 12), // Reduced spacing
+            // Search field - more compact
+            Container(
+              height: 44, // Fixed compact height
+              decoration: BoxDecoration(
+                color: QuestTheme.surfaceColor,
+                borderRadius: BorderRadius.circular(10), // Reduced radius
+                border: Border.all(
+                  color: QuestTheme.textMuted.withValues(alpha: 0.3),
                 ),
               ),
-            ] else if (_searchController.text.isNotEmpty) ...[
-              const Text('Kota tidak ditemukan'),
-            ],
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan nama kota...',
+                  hintStyle: const TextStyle(
+                    fontSize: 13, // Reduced font size
+                    color: QuestTheme.textMuted,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.location_city,
+                    size: 16, // Reduced icon size
+                    color: QuestTheme.textSecondary,
+                  ),
+                  suffixIcon: Container(
+                    margin: const EdgeInsets.all(2), // Reduced margin
+                    child: IconButton(
+                      onPressed: _searchCity,
+                      icon: const Icon(
+                        Icons.search,
+                        size: 16,
+                      ), // Reduced icon size
+                      style: IconButton.styleFrom(
+                        backgroundColor: QuestTheme.primaryBlue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.all(6), // Reduced padding
+                        minimumSize: const Size(32, 32), // Smaller button
+                      ),
+                    ),
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12, // Reduced padding
+                    vertical: 8,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 13), // Reduced font size
+                onSubmitted: (_) => _searchCity(),
+              ),
+            ),
+
+            const SizedBox(height: 12), // Reduced spacing
+            // Search results - flexible height to prevent overflow
+            Flexible(
+              child: Container(
+                width: double.infinity,
+                constraints: BoxConstraints(
+                  minHeight: 80,
+                  maxHeight:
+                      maxDialogHeight - 180, // Reserve space for other elements
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: QuestTheme.textMuted.withValues(alpha: 0.2),
+                  ),
+                  borderRadius: BorderRadius.circular(10), // Reduced radius
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: _buildSearchResults(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12), // Reduced spacing
+            // Footer - more compact
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12, // Reduced padding
+                    vertical: 6,
+                  ),
+                  minimumSize: const Size(0, 32), // Smaller button
+                ),
+                child: const Text(
+                  'Batal',
+                  style: TextStyle(
+                    fontSize: 13, // Reduced font size
+                    color: QuestTheme.textSecondary,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Tutup'),
+    );
+  }
+
+  Widget _buildSearchResults() {
+    if (_isLoading) {
+      return Container(
+        height: 80, // Reduced height
+        padding: const EdgeInsets.all(16), // Reduced padding
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 20, // Reduced size
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    QuestTheme.primaryBlue,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8), // Reduced spacing
+              Text(
+                'Mencari kota...',
+                style: TextStyle(
+                  fontSize: 11, // Reduced font size
+                  color: QuestTheme.textSecondary,
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
+      );
+    }
+
+    if (_searchResults.isNotEmpty) {
+      return ListView.builder(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true, // Important for preventing overflow
+        itemCount: _searchResults.length,
+        itemBuilder: (context, index) {
+          final city = _searchResults[index];
+          return InkWell(
+            onTap: () {
+              widget.onCitySelected(city.id, city.lokasi);
+              Navigator.pop(context);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12, // Reduced padding
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: QuestTheme.textMuted.withValues(alpha: 0.1),
+                    width: 0.5,
+                  ),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(4), // Reduced padding
+                    decoration: BoxDecoration(
+                      color: QuestTheme.primaryBlue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4), // Reduced radius
+                    ),
+                    child: Icon(
+                      Icons.location_city,
+                      size: 12, // Reduced icon size
+                      color: QuestTheme.primaryBlue,
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Reduced spacing
+                  Expanded(
+                    child: Text(
+                      city.lokasi,
+                      style: const TextStyle(
+                        fontSize: 13, // Reduced font size
+                        color: QuestTheme.textPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 10, // Reduced icon size
+                    color: QuestTheme.textMuted,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    if (_searchController.text.isNotEmpty) {
+      return Container(
+        height: 80, // Reduced height
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search_off,
+                size: 24, // Reduced icon size
+                color: QuestTheme.textMuted,
+              ),
+              const SizedBox(height: 4), // Reduced spacing
+              const Text(
+                'Kota tidak ditemukan',
+                style: TextStyle(
+                  fontSize: 12, // Reduced font size
+                  color: QuestTheme.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Text(
+                'Coba dengan kata kunci lain',
+                style: TextStyle(
+                  fontSize: 10, // Reduced font size
+                  color: QuestTheme.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      height: 100, // Reduced height
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.location_searching,
+              size: 24, // Reduced icon size
+              color: QuestTheme.textMuted,
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Masukkan nama kota',
+              style: TextStyle(
+                fontSize: 12, // Reduced font size
+                color: QuestTheme.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Text(
+              'Contoh: Jakarta, Bandung',
+              style: TextStyle(
+                fontSize: 10, // Reduced font size
+                color: QuestTheme.textMuted,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
